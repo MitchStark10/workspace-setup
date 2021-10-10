@@ -1,0 +1,19 @@
+snippet cl "console.log"
+console.log('$1');
+endsnippet
+
+snippet db "debugger"
+debugger;
+endsnippet
+
+snippet wra "Prototype wrap"
+$1.prototype.$2 = _.wrap($1.prototype.$2, function wrappedFunction(originalFn) {
+	var originalReturn = originalFn.apply(this, _.toArray(arguments).slice(1));
+});
+endsnippet
+
+snippet ovr "Prototype overwrite"
+$1.prototype.$2 = function $2($3) {
+
+};
+endsnippet
