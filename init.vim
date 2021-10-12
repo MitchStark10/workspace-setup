@@ -4,7 +4,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'morhetz/gruvbox'
 
 Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " autocomplete, prettier, eslint
-let g:coc_global_extensions = ['coc-html', 'coc-json']  " list of CoC extensions needed
+let g:coc_global_extensions = ['coc-html', 'coc-json', 'coc-eslint', 'coc-tsserver']  " list of CoC extensions needed
 
 " Get linter setup
 Plug 'w0rp/ale'
