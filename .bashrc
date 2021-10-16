@@ -123,5 +123,3 @@ alias open='cmd.exe /c start '
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
-#Auto-Run Caps->Esc key mapping
-cmd.exe /c C:\Users\Mitch\Documents\Caps.ahk
