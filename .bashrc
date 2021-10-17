@@ -120,6 +120,19 @@ fi
 alias ls='ls -a'
 alias home='cd /mnt/c/Users/mitch/'
 alias open='cmd.exe /c start '
+alias nvimconfig="nvim ~/.config/nvim/init.vim"
+alias resource="source ~/.bashrc"
+alias v="nvim"
+alias proj="cd ~/projects/alarm-manager"
 export VISUAL=vim
 export EDITOR="$VISUAL"
+
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PATH=~/.local/bin:$PATH
+
+nvm use 14.17.4
 

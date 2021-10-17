@@ -65,6 +65,10 @@ set expandtab
 nmap <silent> ]] :ALENext<cr>
 nmap <silent> [[ :ALEPrevious<cr>
 
+
+nnoremap <C-p> :GFiles<CR>
+nnoremap <C-f> :Ag<CR>
+
 " Alias file history command
 nnoremap [o :History<cr>
 
