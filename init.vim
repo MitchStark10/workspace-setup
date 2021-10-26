@@ -33,6 +33,8 @@ Plug 'ianks/vim-tsx'
 
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
+Plug 'tpope/vim-fugitive'
+
 " LSP Support
 " NOTE: <space>ca in normal mode will trigger a prompt for code actions
 " available. This can be used for auto importing
