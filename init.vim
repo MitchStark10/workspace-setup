@@ -18,6 +18,10 @@ let g:ale_sign_warning = '⚠️'
 let g:ale_fix_on_save = 1
 let g:ale_linter_aliases = {'typescriptreact': 'typescript'}
 
+" Disable ALE on JSON files
+let g:ale_pattern_options = {'\.json$': {'ale_enabled': 0}}
+
+
 Plug 'jiangmiao/auto-pairs' " auto close ( [ {
 
 Plug 'yuezk/vim-js'
@@ -72,7 +76,7 @@ nnoremap <C-f> :Ag<CR>
 " Alias file history command
 nnoremap [o :History<cr>
 
-autocmd FileType css CocDisable
+autocmd FileType css,json CocDisable
 autocmd FileType ts,js,tsx,jsx CocEnable
 
 set number
