@@ -45,7 +45,11 @@ Plug 'neovim/nvim-lspconfig', {'do': 'npm i -g typescript-language-server diagno
 " \cc is how to block comment
 Plug 'preservim/nerdcommenter'
 
+Plug 'github/copilot.vim'
+
 call plug#end()
+
+set nowrap
 
 " Use system clipboard
 set clipboard+=unnamedplus
@@ -72,6 +76,7 @@ nmap <silent> [[ :ALEPrevious<cr>
 
 nnoremap <C-p> :GFiles<CR>
 nnoremap <C-f> :Ag<CR>
+let g:fzf_history_dir = 1
 
 " Alias file history command
 nnoremap [o :History<cr>
@@ -94,6 +99,20 @@ let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 " let g:prettier#autoformat_require_pragma = 0
 " let g:prettier#config#single_quote = 'true'
 nnoremap ff :Prettier<CR>
+
+set exrc
+set secure
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
 lua << EOF
 local nvim_lsp = require("lspconfig")
