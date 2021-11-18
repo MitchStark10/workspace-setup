@@ -141,4 +141,5 @@ export NVM_DIR="$HOME/.nvm"
 export PATH=~/.local/bin:$PATH
 
 nvm use 14.17.4
-
+alias vim="nvim"
+cd ~;
