@@ -45,7 +45,7 @@ Plug 'neovim/nvim-lspconfig', {'do': 'npm i -g typescript-language-server diagno
 " \cc is how to block comment
 Plug 'preservim/nerdcommenter'
 
-Plug 'github/copilot.vim'
+Plug 'f-person/git-blame.nvim'
 
 call plug#end()
 
