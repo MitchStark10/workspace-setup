@@ -103,6 +103,9 @@ nnoremap ff :Prettier<CR>
 set exrc
 set secure
 
+nnoremap <silent> <S-Up> <C-w>w<CR>
+nnoremap <silent> <S-n> <C-w>v<CR>
+
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
