@@ -52,6 +52,7 @@ Plug 'f-person/git-blame.nvim'
 call plug#end()
 
 set nowrap
+set smartcase
 
 " Use system clipboard
 set clipboard+=unnamedplus
