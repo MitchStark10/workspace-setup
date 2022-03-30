@@ -37,6 +37,8 @@ Plug 'ianks/vim-tsx'
 
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
+Plug 'NLKNguyen/papercolor-theme'
+
 " LSP Support
 " NOTE: <space>ca in normal mode will trigger a prompt for code actions
 " available. This can be used for auto importing
@@ -57,8 +59,9 @@ set smartcase
 " Use system clipboard
 set clipboard+=unnamedplus
 
-" Color scheme
-colorscheme gruvbox
+" Theme updates
+set background=dark
+colorscheme PaperColor
 
 " Nerdtree keymap
 nnoremap <leader>n :NERDTreeFocus<CR>
