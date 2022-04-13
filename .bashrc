@@ -129,7 +129,11 @@ alias open='cmd.exe /c start '
 alias nvimconfig="nvim ~/.config/nvim/init.vim"
 alias resource="source ~/.bashrc"
 alias v="nvim"
+alias scNode="nvm use 12.16.2"
 alias proj="cd ~/projects/alarm-manager"
+alias tekSca="scNode;cd ~/work/tekton-2019-2/"
+alias wf="scNode;tekSca;cd extensions;gulp watch-folder"
+alias el="scNode;tekSca;cd extensions;gulp extension:local"
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
@@ -142,4 +146,5 @@ export PATH=~/.local/bin:$PATH
 
 nvm use 14.17.4
 alias vim="nvim"
+alias pic="cd ~/work/commerce"
 cd ~;
