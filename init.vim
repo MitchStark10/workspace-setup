@@ -51,6 +51,10 @@ Plug 'hashivim/vim-terraform'
 
 Plug 'f-person/git-blame.nvim'
 
+Plug 'github/copilot.vim'
+
+Plug 'mbbill/undotree'
+
 call plug#end()
 
 set nowrap
@@ -110,7 +114,7 @@ set exrc
 set secure
 
 nnoremap <silent> <S-Up> <C-w>w<CR>
-nnoremap <silent> <S-n> <C-w>v<CR>
+nnoremap <silent> <S-u> :UndotreeToggle<CR>
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
