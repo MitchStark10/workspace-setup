@@ -42,7 +42,7 @@ Plug 'NLKNguyen/papercolor-theme'
 " LSP Support
 " NOTE: <space>ca in normal mode will trigger a prompt for code actions
 " available. This can be used for auto importing
-Plug 'neovim/nvim-lspconfig', {'do': 'npm i -g typescript-language-server diagnostic-languageserver'}
+Plug 'neovim/nvim-lspconfig', {'do': 'npm i -g typescript-language-server diagnostic-languageserver @tailwindcss/language-server'}
 
 " \cc is how to block comment
 Plug 'preservim/nerdcommenter'
@@ -60,6 +60,8 @@ Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 " brew tap caskroom/fonts
 " brew cask install font-hack-nerd-font
+
+Plug 'kabouzeid/nvim-lspinstall'
 
 call plug#end()
 
@@ -94,8 +96,6 @@ nmap <silent> [[ :ALEPrevious<cr>
 
 nnoremap <C-p> :GFiles<CR>
 nnoremap <C-f> :Ag<CR>
-let g:fzf_history_dir = 1
-let g:fzf_layout = 'vertical aboveleft 30new'
 
 " Alias file history command
 nnoremap [o :History<cr>
@@ -198,6 +198,9 @@ nvim_lsp.tsserver.setup {
         on_attach(client)
     end
 }
+
+nvim_lsp.tailwindcss.setup{}
+
 local filetypes = {
     typescript = "eslint",
     typescriptreact = "eslint",
