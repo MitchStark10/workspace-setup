@@ -4,7 +4,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'morhetz/gruvbox'
 
 Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " autocomplete, prettier, eslint
-let g:coc_global_extensions = ['coc-html', 'coc-json', 'coc-eslint', 'coc-tsserver']  " list of CoC extensions needed
+let g:coc_global_extensions = ['coc-html', 'coc-json', 'coc-eslint', 'coc-tsserver', 'coc-tailwindcss']  " list of CoC extensions needed
 
 " Get linter setup
 Plug 'w0rp/ale'
@@ -42,7 +42,7 @@ Plug 'NLKNguyen/papercolor-theme'
 " LSP Support
 " NOTE: <space>ca in normal mode will trigger a prompt for code actions
 " available. This can be used for auto importing
-Plug 'neovim/nvim-lspconfig', {'do': 'npm i -g typescript-language-server diagnostic-languageserver @tailwindcss/language-server'}
+Plug 'neovim/nvim-lspconfig', {'do': 'npm i -g typescript-language-server diagnostic-languageserver'}
 
 " \cc is how to block comment
 Plug 'preservim/nerdcommenter'
@@ -50,8 +50,6 @@ Plug 'preservim/nerdcommenter'
 Plug 'hashivim/vim-terraform'
 
 Plug 'f-person/git-blame.nvim'
-
-Plug 'github/copilot.vim'
 
 Plug 'mbbill/undotree'
 
@@ -198,8 +196,6 @@ nvim_lsp.tsserver.setup {
         on_attach(client)
     end
 }
-
-nvim_lsp.tailwindcss.setup{}
 
 local filetypes = {
     typescript = "eslint",
