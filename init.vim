@@ -191,9 +191,9 @@ local on_attach = function(client, bufnr)
 end
 
 nvim_lsp.tsserver.setup {
-    on_attach = function(client)
+    on_attach = function(client, bufnr)
         client.resolved_capabilities.document_formatting = false
-        on_attach(client)
+        on_attach(client, bufnr)
     end
 }
 
@@ -267,4 +267,7 @@ require('lualine').setup {
   tabline = {},
   extensions = {}
 }
+
+
+
 EOF
