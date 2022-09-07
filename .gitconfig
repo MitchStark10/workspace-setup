@@ -15,5 +15,8 @@
     st = status
     ci = commit
     br = branch
+    feature = "!git checkout develop;git pull; git checkout -b"
 [commit]
 	template = /Users/mitchstark/.stCommitMsg
+[push]
+	autoSetupRemote = true
