@@ -20,3 +20,4 @@
 	template = /Users/mitchstark/.stCommitMsg
 [push]
 	autoSetupRemote = true
+	default = current
