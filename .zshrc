@@ -1,3 +1,5 @@
+# Fig pre block. Keep at the top of this file.
+[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 # zsh configuration
 export ZSH="/Users/mitchstark/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
@@ -57,27 +59,47 @@ alias apps="cd ~/projects/ct-applications"
 alias ter="cd ~/projects/ct-terraform"
 alias scripts="cd ~/projects/ctCliScripts"
 alias sync="cd ~/projects/ct-project-sync"
+alias reset="rm -rf node_modules/ package-lock.json .next; npm i"
 
 function prs() {
     currentDir=$(pwd)
+
+    echo "---------------Picasso------------------"
     pic;gh pr status;
     echo "Press any key to continue"
     read anyKey;
+
+    echo "---------------PINT---------------------"
     pint;gh pr status;
     echo "Press any key to continue"
     read anyKey;
+
+    echo "---------------npm-lib---------------------"
     lib;gh pr status;
     echo "Press any key to continue"
     read anyKey;
+
+    echo "---------------ct-applications---------------------"
     apps;gh pr status;
     echo "Press any key to continue"
     read anyKey;
+
+
+    echo "---------------ct-cli-scripts---------------------"
     scripts;gh pr status;
     echo "Press any key to continue"
     read anyKey;
+
+    echo "---------------terrform---------------------"
     ter;gh pr status;
     echo "Press any key to continue"
     read anyKey;
+
+    echo "---------------TST-----------------------"
+    proj;gh pr status;
+    echo "Press any key to continue"
+    read anyKey;
+
     cd $currentDir;
 }
 
@@ -107,3 +129,6 @@ function cleanBranches() {
         echo $localBranch
     done
 }
+
+# Fig post block. Keep at the bottom of this file.
+[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
