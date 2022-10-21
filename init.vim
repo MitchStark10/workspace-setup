@@ -4,14 +4,11 @@ Plug 'scrooloose/nerdtree'
 Plug 'morhetz/gruvbox'
 
 Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " autocomplete, prettier, eslint
-let g:coc_global_extensions = ['coc-html', 'coc-json', 'coc-eslint', 'coc-tsserver', 'coc-tailwindcss']  " list of CoC extensions needed
+let g:coc_global_extensions = ['coc-html', 'coc-json', 'coc-eslint', 'coc-tsserver']  " list of CoC extensions needed
 
 " Get linter setup
 Plug 'w0rp/ale'
-let g:ale_fixers = {
- \ 'javascript': ['eslint', 'prettier'],
- \ 'typescript': ['eslint', 'prettier'],
- \ }
+let g:ale_fixers = {'javascript': ['eslint', 'prettier'], 'typescript': ['eslint', 'prettier'] }
 let g:ale_linters = {'javascript': ['eslint', 'prettier'], 'typescript': ['eslint', 'prettier']}
 let g:ale_sign_error = '❌'
 let g:ale_sign_warning = '⚠️'
@@ -192,7 +189,7 @@ end
 
 nvim_lsp.tsserver.setup {
     on_attach = function(client, bufnr)
-        client.resolved_capabilities.document_formatting = false
+        client.server_capabilities.documentFormattingProvider = false
         on_attach(client, bufnr)
     end
 }
