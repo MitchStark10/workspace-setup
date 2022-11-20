@@ -4,7 +4,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'morhetz/gruvbox'
 
 Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " autocomplete, prettier, eslint
-let g:coc_global_extensions = ['coc-html', 'coc-json', 'coc-eslint', 'coc-tsserver']  " list of CoC extensions needed
+let g:coc_global_extensions = ['coc-html', 'coc-json', 'coc-eslint', 'coc-tsserver', 'coc-prisma']  " list of CoC extensions needed
 
 " Get linter setup
 Plug 'w0rp/ale'
@@ -41,14 +41,16 @@ Plug 'NLKNguyen/papercolor-theme'
 " available. This can be used for auto importing
 Plug 'neovim/nvim-lspconfig', {'do': 'npm i -g typescript-language-server diagnostic-languageserver'}
 
-" \cc is how to block comment
-Plug 'preservim/nerdcommenter'
 
 Plug 'hashivim/vim-terraform'
 
 Plug 'f-person/git-blame.nvim'
 
 Plug 'mbbill/undotree'
+
+" Normal mode comment: gcc
+" Visual mode comment: gc
+Plug 'https://github.com/tpope/vim-commentary'
 
 " LuaLine
 Plug 'nvim-lualine/lualine.nvim'
@@ -77,9 +79,7 @@ nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap tt :NERDTreeToggle<CR>
 nnoremap fn :NERDTreeFind<CR>
-
-" Nerdcommenter
- nnoremap <leader>cc :NERDCommenterToggle<CR>
+nnoremap fa :ALEFix<CR>
 
 " Use spaces instead of tabs
 set expandtab
