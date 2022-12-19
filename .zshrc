@@ -14,7 +14,6 @@ export CYPRESS_CACHE_FOLDER=/Users/mitchstark/Library/Caches/Cypress
 #Alias
 alias devNode="nvm use 16.15.1"
 alias ls="ls -al"
-alias proj="tstNode; ~/projects/tst2"
 alias home="cd ~"
 alias editProfile="vim ~/.zshrc"
 alias resource="source ~/.zshrc"
