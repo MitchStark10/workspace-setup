@@ -1,23 +1,13 @@
 [user]
 	name = Mitch Stark
-	email = mitch.stark@tekton.com
 [core]
 	excludesfile = /Users/mitchstark/.gitignore_global
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
 
 [alias]
     co = checkout
     st = status
     ci = commit
     br = branch
-    feature = "!git checkout develop;git pull; git checkout -b"
-[commit]
-	template = /Users/mitchstark/.stCommitMsg
 [push]
 	autoSetupRemote = true
 	default = current
