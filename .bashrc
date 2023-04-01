@@ -128,12 +128,6 @@ alias home='cd /mnt/c/Users/mitch/'
 alias open='cmd.exe /c start '
 alias nvimconfig="nvim ~/.config/nvim/init.vim"
 alias resource="source ~/.bashrc"
-alias v="nvim"
-alias scNode="nvm use 14.17.4"
-alias proj="cd ~/projects/alarm-manager"
-alias tekSca="scNode;cd ~/work/tekton-2019-2/"
-alias wf="tekSca;cd extensions;gulp watch-folder"
-alias el="tekSca;cd extensions;gulp extension:local"
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
@@ -145,10 +139,4 @@ export NVM_DIR="$HOME/.nvm"
 export PATH=~/.local/bin:$PATH
 
 source ~/private.bashrc;
-
-nvm use 14.17.4
-alias vim="nvim"
-alias pic="cd ~/work/commerce"
-alias pint="cd ~/work/pint"
-alias pl="pic;npm run dev"
 cd ~;
