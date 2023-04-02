@@ -1,19 +1,11 @@
-$Shell = $Host.UI.RawUI
-$size = $Shell.WindowSize
-$size.width=70
-$size.height=25
-$Shell.WindowSize = $size
-$size = $Shell.BufferSize
-$size.width=70
-$size.height=300
-$Shell.BufferSize = $size
-
-function startProfile{
-	start notepad++ $profile
+function proj {
+    Set-Location C:/Users/Mitch/projects/soccersage.io;
 }
-new-item alias:profile -value startProfile
 
-function notepadplusplus{
-	start notepad++ $args
+function home {
+    Set-Location C:/Users/Mitch;
 }
-new-item alias:npp -value notepadplusplus
+
+function cleanBranches {
+  git branch --merged | Select-String -Pattern '^(?!.*(master|dev|release|main)).*$' | ForEach-Object { git branch -d $_.ToString().Trim() }
+}
