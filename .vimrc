@@ -276,9 +276,6 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 " SSP Syntax -----------------------------------------------
 au BufRead,BufNewFile *.ssp set filetype=html
 
-" TetktonSuiteScript spacing
-augroup TektonSuiteScriptSetup
-au BufRead,BufEnter ~/projects/TektonSuiteScript/* set tabstop=2 shiftwidth=2
 augroup END
 
 "Ultisnips ------------------------------------------------
