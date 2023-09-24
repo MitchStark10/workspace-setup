@@ -1,13 +1,14 @@
 [user]
 	name = Mitch Stark
 [core]
-	excludesfile = /Users/mitchstark/.gitignore_global
+	excludesFile = ~/.gitignore
+	editor = vim
 
 [alias]
-    co = checkout
-    st = status
-    ci = commit
-    br = branch
+	co = checkout
+	st = status
+	ci = commit
+	br = branch
 [push]
 	autoSetupRemote = true
 	default = current
