@@ -43,9 +43,11 @@ set tabstop=2
 set shiftwidth=2
 set expandtab
 syntax on
-set clipboard=unnamed
 set backspace=2
 set number
+set mouse=a
+set clipboard=unnamed
+vnoremap <C-c> y:!echo <C-r>=escape(substitute(shellescape(getreg('"')), '\n', '\r', 'g'), '#%!')<CR> <Bar> clip.exe<CR><CR>
 
 "eslint-----------------------------------------
 let g:ale_fixers = {}
@@ -252,7 +254,7 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming
-nmap <leader>rn <Plug>(coc-rename)
+nmap <space>rn <Plug>(coc-rename)
 
 " Formatting selected code
 xmap <leader>f  <Plug>(coc-format-selected)
