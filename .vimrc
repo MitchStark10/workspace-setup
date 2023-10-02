@@ -338,6 +338,8 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 " Add `:OR` command for organize imports of the current buffer
 command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
 
+command! -nargs=0 FullFormat :OR | :ALEFix
+
 " Add (Neo)Vim's native statusline support
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline
@@ -365,7 +367,7 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 nmap <space>or :OR<CR>
 nmap [o :History<CR>
 nmap fn :NERDTreeFind<CR>
-nmap ff :ALEFix<CR>:OR<CR>
+nmap ff :FullFormat<CR>
 nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap fb /<c-r>+<CR>
