@@ -49,13 +49,25 @@ set mouse=a
 set clipboard=unnamed
 vnoremap <C-c> y:!echo <C-r>=escape(substitute(shellescape(getreg('"')), '\n', '\r', 'g'), '#%!')<CR> <Bar> clip.exe<CR><CR>
 
-"eslint-----------------------------------------
+"Search defaults
+set is hls
+
+""eslint-----------------------------------------
 let g:ale_fixers = {}
-let g:ale_fixers.javascript = ['eslint']
+let g:ale_fixers.javascript = ['prettier', 'eslint']
+let g:ale_fixers.javascriptreact = ['prettier', 'eslint']
+let g:ale_fixers.typescript = ['prettier', 'eslint']
+let g:ale_fixers.typescriptreact = ['prettier', 'eslint']
 let g:ale_fix_on_save = 1
 let g:ale_sign_column_always = 1
+
 nmap ]] :ALENextWrap<CR>
 nmap [[ :ALEPreviousWrap<CR>
+
+try
+  nmap <silent> [c :call CocAction('diagnosticNext')<cr>
+  nmap <silent> ]c :call CocAction('diagnosticPrevious')<cr>
+endtry
 
 
 "Ignore files---------------------------------
@@ -168,7 +180,7 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm(): "\<C-g>u\<CR
 inoremap <silent><expr> <c-@> coc#refresh()
 
 "Prettier
-let g:prettier#autoformat = 1
+let g:prettier#autoformat = 0
 let g:prettier#autoformat_require_pragma = 0
 
 "Windows cursor issue fix
@@ -253,6 +265,9 @@ endfunction
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
+" Setup organize imports on write
+command! OR silent call CocAction('runCommand', 'editor.action.organizeImport')
+
 " Symbol renaming
 nmap <space>rn <Plug>(coc-rename)
 
@@ -270,15 +285,15 @@ augroup end
 
 " Applying code actions to the selected code block
 " Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+xmap <space>a  <Plug>(coc-codeaction-selected)
+nmap <space>a  <Plug>(coc-codeaction-selected)
 
 " Remap keys for applying code actions at the cursor position
-nmap <leader>ac  <Plug>(coc-codeaction-cursor)
+nmap <space>ca  <Plug>(coc-codeaction-cursor)
 " Remap keys for apply code actions affect whole buffer
-nmap <leader>as  <Plug>(coc-codeaction-source)
+nmap <space>as  <Plug>(coc-codeaction-source)
 " Apply the most preferred quickfix action to fix diagnostic on the current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <space>qf  <Plug>(coc-fix-current)
 
 " Remap keys for applying refactor code actions
 nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
@@ -347,8 +362,10 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 "General Aliases---------------------------------
+nmap <space>or :OR<CR>
 nmap [o :History<CR>
 nmap fn :NERDTreeFind<CR>
+nmap ff :ALEFix<CR>:OR<CR>
 nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap fb /<c-r>+<CR>
@@ -359,5 +376,6 @@ nmap <c-f> :Ag<CR>
 command! DiffOrig rightbelow vertical new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command! Light set background=light
 command! Dark set background=dark
+command! T terminal
 colorscheme PaperColor
 :Dark
