@@ -58,9 +58,8 @@ let g:ale_fixers.javascript = ['prettier', 'eslint']
 let g:ale_fixers.javascriptreact = ['prettier', 'eslint']
 let g:ale_fixers.typescript = ['prettier', 'eslint']
 let g:ale_fixers.typescriptreact = ['prettier', 'eslint']
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
 let g:ale_sign_column_always = 1
-
 nmap ]] :ALENextWrap<CR>
 nmap [[ :ALEPreviousWrap<CR>
 
@@ -266,8 +265,7 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Setup organize imports on write
-command! OR silent call CocAction('runCommand', 'editor.action.organizeImport')
-
+command! OR call CocAction('runCommand', 'editor.action.organizeImport') | exe ":ALEFix"
 " Symbol renaming
 nmap <space>rn <Plug>(coc-rename)
 
@@ -275,12 +273,17 @@ nmap <space>rn <Plug>(coc-rename)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
+function LogCompletion()
+  unsilent echo "Completed ALEFixPost"
+endfunction
+
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s)
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
   " Update signature help on jump placeholder
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+  autocmd User ALEFixPost call LogCompletion()
 augroup end
 
 " Applying code actions to the selected code block
@@ -335,11 +338,6 @@ command! -nargs=0 Format :call CocActionAsync('format')
 " Add `:Fold` command to fold current buffer
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
-" Add `:OR` command for organize imports of the current buffer
-command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
-
-command! -nargs=0 FullFormat :OR | :ALEFix
-
 " Add (Neo)Vim's native statusline support
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline
@@ -364,10 +362,9 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 "General Aliases---------------------------------
-nmap <space>or :OR<CR>
 nmap [o :History<CR>
 nmap fn :NERDTreeFind<CR>
-nmap ff :FullFormat<CR>
+nmap ff :OR<CR>
 nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap fb /<c-r>+<CR>
