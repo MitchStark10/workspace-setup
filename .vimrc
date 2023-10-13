@@ -59,6 +59,7 @@ let g:ale_fixers.javascriptreact = ['prettier', 'eslint']
 let g:ale_fixers.typescript = ['prettier', 'eslint']
 let g:ale_fixers.typescriptreact = ['prettier', 'eslint']
 let g:ale_fix_on_save = 0
+let g:ale_lint_on_insert_leave = 0
 let g:ale_sign_column_always = 1
 nmap ]] :ALENextWrap<CR>
 nmap [[ :ALEPreviousWrap<CR>
@@ -265,7 +266,7 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Setup organize imports on write
-command! OR call CocAction('runCommand', 'editor.action.organizeImport') | exe ":ALEFix"
+command! OR call CocAction('runCommand', 'editor.action.organizeImport') | exe ":ALELint" | exe ":ALEFix"
 " Symbol renaming
 nmap <space>rn <Plug>(coc-rename)
 
@@ -275,6 +276,7 @@ nmap <leader>f  <Plug>(coc-format-selected)
 
 function LogCompletion()
   unsilent echo "Completed ALEFixPost"
+  write
 endfunction
 
 augroup mygroup
