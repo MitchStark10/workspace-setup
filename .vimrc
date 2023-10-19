@@ -9,28 +9,20 @@ Plugin 'VundleVim/Vundle.vim'
 "Plugins ---------------------------------------
 Plugin 'eslint/eslint'
 Plugin 'w0rp/ale'
-Plugin 'HenryNewcomer/vim-theme-papaya'
 Plugin 'pangloss/vim-javascript'
-Plugin 'danilo-augusto/vim-afterglow'
 Plugin 'preservim/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
-Plugin 'vim-gitgutter'
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'mileszs/ack.vim'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'tpope/vim-commentary'
 Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'gko/vim-coloresque'
-Plugin 'tpope/vim-surround'
 Plugin 'vim-airline/vim-airline'
-Plugin 'sirver/ultisnips'
-Plugin 'honza/vim-snippets'
 Plugin 'preservim/nerdcommenter'
 Plugin 'neoclide/coc.nvim', {'branch': 'release'}
 Plugin 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production', 'branch': 'release/0.x' }
-Plugin 'github/copilot.vim'
 Plugin 'NLKNguyen/papercolor-theme'
+Plugin 'tpope/vim-fugitive'
 call vundle#end()
 filetype plugin indent on
 
@@ -46,8 +38,17 @@ syntax on
 set backspace=2
 set number
 set mouse=a
+
+" WSL yank support
 set clipboard=unnamed
-vnoremap <C-c> y:!echo <C-r>=escape(substitute(shellescape(getreg('"')), '\n', '\r', 'g'), '#%!')<CR> <Bar> clip.exe<CR><CR>
+let s:clip = '/mnt/c/Windows/System32/clip.exe'  " change this path according to your mount point
+if executable(s:clip)
+    augroup WSLYank
+        autocmd!
+        autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
+    augroup END
+endif
+" vnoremap <C-c> y:!echo <C-r>=escape(substitute(shellescape(getreg('"')), '\n', '\r', 'g'), '#%!')<CR> <Bar> clip.exe<CR><CR>
 
 "Search defaults
 set is hls
@@ -80,7 +81,7 @@ set wildmode=list:longest,full
 set ignorecase
 set smartcase
 
-let s:ag_options = ' --ignore node_modules --ignore gulp'
+let s:ag_options = ' --ignore **/node_modules --ignore gulp'
 
 "Searching----------------------------------
 let g:fzf_history_dir = '~/.local/share/fzf-history'
@@ -88,6 +89,7 @@ let g:fzf_history_dir = '~/.local/share/fzf-history'
 
 "Nerdtree------------------------------------
 nmap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-b> :Buffers<CR>
 let g:NERDTeeIgnore = ['^node_modules$']
 let NERDTreeShowHidden=1
 
@@ -320,14 +322,14 @@ xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> to scroll float windows/popups
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
+" if has('nvim-0.4.0') || has('patch-8.2.0750')
+"   nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+"   nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+"   inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+"   inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+"   vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+"   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+" endif
 
 " Use CTRL-S for selections ranges
 " Requires 'textDocument/selectionRange' support of language server
