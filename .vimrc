@@ -7,8 +7,6 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 "Plugins ---------------------------------------
-Plugin 'eslint/eslint'
-Plugin 'w0rp/ale'
 Plugin 'pangloss/vim-javascript'
 Plugin 'preservim/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
@@ -20,9 +18,9 @@ Plugin 'gko/vim-coloresque'
 Plugin 'vim-airline/vim-airline'
 Plugin 'preservim/nerdcommenter'
 Plugin 'neoclide/coc.nvim', {'branch': 'release'}
-Plugin 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production', 'branch': 'release/0.x' }
 Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'tpope/vim-fugitive'
+Plugin 'vimpostor/vim-lumen'
 call vundle#end()
 filetype plugin indent on
 
@@ -53,17 +51,12 @@ endif
 "Search defaults
 set is hls
 
-""eslint-----------------------------------------
-let g:ale_fixers = {}
-let g:ale_fixers.javascript = ['prettier', 'eslint']
-let g:ale_fixers.javascriptreact = ['prettier', 'eslint']
-let g:ale_fixers.typescript = ['prettier', 'eslint']
-let g:ale_fixers.typescriptreact = ['prettier', 'eslint']
-let g:ale_fix_on_save = 0
-let g:ale_lint_on_insert_leave = 0
-let g:ale_sign_column_always = 1
-nmap ]] :ALENextWrap<CR>
-nmap [[ :ALEPreviousWrap<CR>
+let g:coc_global_extensions = [
+  \'coc-tsserver',
+  \'coc-eslint',
+  \'coc-prettier',
+  \'coc-json', 
+\]
 
 try
   nmap <silent> [c :call CocAction('diagnosticNext')<cr>
@@ -181,10 +174,6 @@ inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm(): "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 inoremap <silent><expr> <c-@> coc#refresh()
 
-"Prettier
-let g:prettier#autoformat = 0
-let g:prettier#autoformat_require_pragma = 0
-
 "Windows cursor issue fix
 if &term =~ '^xterm'
   " solid underscore
@@ -201,6 +190,7 @@ endif
 "Coc.nvim code action setup
 " May need for Vim (not Neovim) since coc.nvim calculates byte offset by count
 " utf-8 byte sequence
+command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
 set encoding=utf-8
 " Some servers have issues with backup files, see #649
 set nobackup
@@ -253,9 +243,6 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Use K to show documentation in preview window
-nnoremap <silent> K :call ShowDocumentation()<CR>
-
 function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
     call CocActionAsync('doHover')
@@ -266,9 +253,11 @@ endfunction
 
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
+nnoremap K :call CocActionAsync('doHover')<CR>
 
 " Setup organize imports on write
-command! OR call CocAction('runCommand', 'editor.action.organizeImport') | exe ":ALELint" | exe ":ALEFix"
+command! OR call CocAction('runCommand', 'editor.action.organizeImport')
+autocmd BufWritePre *.js,*.ts,*.jsx,*.tsx :OR
 " Symbol renaming
 nmap <space>rn <Plug>(coc-rename)
 
@@ -276,18 +265,12 @@ nmap <space>rn <Plug>(coc-rename)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
-function LogCompletion()
-  unsilent echo "Completed ALEFixPost"
-  write
-endfunction
-
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s)
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
   " Update signature help on jump placeholder
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-  autocmd User ALEFixPost call LogCompletion()
 augroup end
 
 " Applying code actions to the selected code block
@@ -376,9 +359,13 @@ vmap <c-_> \c<space><CR>
 nmap <c-_> \c<space><CR>
 nmap <c-p> :FZF<CR>
 nmap <c-f> :Ag<CR>
+nnoremap <c-k> :redr!<CR>
 command! DiffOrig rightbelow vertical new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
+command! T terminal
+
+" Color scheme handling
 command! Light set background=light
 command! Dark set background=dark
-command! T terminal
 colorscheme PaperColor
-:Dark
+au User LumenLight :Light
+au User LumenDark :Dark
