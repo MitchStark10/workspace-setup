@@ -59,8 +59,10 @@ let g:coc_global_extensions = [
 \]
 
 try
-  nmap <silent> [c :call CocAction('diagnosticNext')<cr>
-  nmap <silent> ]c :call CocAction('diagnosticPrevious')<cr>
+  nnoremap <silent> ]a :CocDiagnostics<CR>
+  nnoremap <silent> [a :CocDiagnostics<CR>
+  nnoremap <silent> ]] :call CocAction('diagnosticNext')<cr>
+  nnoremap <silent> [[ :call CocAction('diagnosticPrevious')<cr>
 endtry
 
 
@@ -357,6 +359,7 @@ nmap tp :tabp<CR>
 nmap fb /<c-r>+<CR>
 vmap <c-_> \c<space><CR>
 nmap <c-_> \c<space><CR>
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 nmap <c-p> :FZF<CR>
 nmap <c-f> :Ag<CR>
 nnoremap <c-k> :redr!<CR>
@@ -369,3 +372,6 @@ command! Dark set background=dark
 colorscheme PaperColor
 au User LumenLight :Light
 au User LumenDark :Dark
+
+command! Gblame 0,3Git blame
+:Dark
