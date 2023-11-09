@@ -61,8 +61,8 @@ let g:coc_global_extensions = [
 try
   nnoremap <silent> ]a :CocDiagnostics<CR>
   nnoremap <silent> [a :CocDiagnostics<CR>
-  nnoremap <silent> ]] :call CocAction('diagnosticNext')<cr>
-  nnoremap <silent> [[ :call CocAction('diagnosticPrevious')<cr>
+  nnoremap <silent> ]] :CocDiagnostics<cr>
+  nnoremap <silent> [[ :CocDiagnostics<cr>
 endtry
 
 
@@ -369,6 +369,7 @@ command! T terminal
 " Color scheme handling
 command! Light set background=light
 command! Dark set background=dark
+command! CloseBuffers %bd|e#
 colorscheme PaperColor
 au User LumenLight :Light
 au User LumenDark :Dark
