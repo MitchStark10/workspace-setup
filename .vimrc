@@ -66,17 +66,11 @@ try
 endtry
 
 
-"Ignore files---------------------------------
-set wildignore+=**/node_modules/**
-set wildignore+=**/DeployDistribution/**
-set wildignore+=**/LocalDistribution/**
-set wildignore+=**/Extras/**
+"Wild menu----------------------------------
 set wildmenu
 set wildmode=list:longest,full
 set ignorecase
 set smartcase
-
-let s:ag_options = ' --ignore **/node_modules --ignore gulp'
 
 "Searching----------------------------------
 let g:fzf_history_dir = '~/.local/share/fzf-history'
@@ -100,7 +94,7 @@ set nobackup
 set nowritebackup
 
 " Give more space for displaying messages.
-set cmdheight=2
+set cmdheight=1
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
@@ -118,18 +112,6 @@ else
   set signcolumn=yes
 endif
 
-"Ultisnips ------------------------------------------------
-" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
-" - https://github.com/Valloric/YouCompleteMe
-" - https://github.com/nvim-lua/completion-nvim
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<stab>"
-
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsSnippetsDir="~/tools/UltiSnips"
-let g:UltiSnipsSnippetDirectories=[$HOME.'/tools/UltiSnips']
 
 "NERDCommenter----------------------------------------
 " Create default mappings
@@ -162,10 +144,6 @@ let g:NERDToggleCheckAllLines = 1
 " Fix for a git gutter issue that occasionally happens
 let g:gitgutter_realtime = 0
 
-" Delete but don't copy
-nnoremap d "_d
-vnoremap d "_d
-
 filetype plugin on
 
 inoremap <silent><expr> <TAB>
@@ -194,17 +172,6 @@ endif
 " utf-8 byte sequence
 command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
 set encoding=utf-8
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
-
-" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
-" delays and poor user experience
-set updatetime=300
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved
-set signcolumn=yes
 
 " Use tab for trigger completion with characters ahead and navigate
 " NOTE: There's always complete item selected by default, you may want to enable
@@ -350,6 +317,10 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
+"Airline customization
+let g:airline_section_x = ""
+let g:airline_section_y = ""
+
 "General Aliases---------------------------------
 nmap [o :History<CR>
 nmap fn :NERDTreeFind<CR>
@@ -375,4 +346,12 @@ au User LumenLight :Light
 au User LumenDark :Dark
 
 command! Gblame 0,3Git blame
-:Dark
+
+if system("powershell.exe Get-ItemProperty -Path
+    \ \" HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\"
+    \ -Name AppsUseLightTheme | grep AppsUse | awk '{ print $3 }'") == 0
+   :Dark
+   set background=dark
+else
+   set background=light
+endif
