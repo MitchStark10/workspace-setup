@@ -46,7 +46,6 @@ if executable(s:clip)
         autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
     augroup END
 endif
-" vnoremap <C-c> y:!echo <C-r>=escape(substitute(shellescape(getreg('"')), '\n', '\r', 'g'), '#%!')<CR> <Bar> clip.exe<CR><CR>
 
 "Search defaults
 set is hls
@@ -226,7 +225,8 @@ nnoremap K :call CocActionAsync('doHover')<CR>
 
 " Setup organize imports on write
 command! OR call CocAction('runCommand', 'editor.action.organizeImport')
-autocmd BufWritePre *.js,*.ts,*.jsx,*.tsx :OR
+" autocmd BufWritePre *.js,*.ts,*.jsx,*.tsx :OR
+
 " Symbol renaming
 nmap <space>rn <Plug>(coc-rename)
 
@@ -273,16 +273,6 @@ omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
-" Remap <C-f> and <C-b> to scroll float windows/popups
-" if has('nvim-0.4.0') || has('patch-8.2.0750')
-"   nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-"   nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-"   inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-"   inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-"   vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-"   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-" endif
-
 " Use CTRL-S for selections ranges
 " Requires 'textDocument/selectionRange' support of language server
 nmap <silent> <C-s> <Plug>(coc-range-select)
@@ -328,11 +318,16 @@ nmap ff :OR<CR>
 nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap fb /<c-r>+<CR>
+nnoremap <C-s> :w<CR>
 vmap <c-_> \c<space><CR>
 nmap <c-_> \c<space><CR>
-let $FZF_DEFAULT_COMMAND = 'ag -g ""'
+let $FZF_DEFAULT_COMMAND = 'ag --hidden -g ""'
 nmap <c-p> :FZF<CR>
+
+" Workaround for searching hidden folders
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, "--hidden", fzf#vim#with_preview(), <bang>0)
 nmap <c-f> :Ag<CR>
+
 nnoremap <c-k> :redr!<CR>
 command! DiffOrig rightbelow vertical new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command! T terminal
