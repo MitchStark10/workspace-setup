@@ -21,6 +21,7 @@ Plugin 'neoclide/coc.nvim', {'branch': 'release'}
 Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'tpope/vim-fugitive'
 Plugin 'vimpostor/vim-lumen'
+Plugin 'github/copilot.vim'
 call vundle#end()
 filetype plugin indent on
 
@@ -59,9 +60,8 @@ let g:coc_global_extensions = [
 
 try
   nnoremap <silent> ]a :CocDiagnostics<CR>
-  nnoremap <silent> [a :CocDiagnostics<CR>
-  nnoremap <silent> ]] :CocDiagnostics<cr>
-  nnoremap <silent> [[ :CocDiagnostics<cr>
+  nnoremap <silent> ]] :call CocAction('diagnosticNext')<cr>
+  nnoremap <silent> [[ :call CocAction('diagnosticPrevious')<cr>
 endtry
 
 
@@ -211,6 +211,8 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
+call coc#config('list', { 'maxPreviewHeight': 30 })
+
 function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
     call CocActionAsync('doHover')
@@ -294,8 +296,6 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
 " Manage extensions
 nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
 " Find symbol of current document
 nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols

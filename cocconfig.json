@@ -1,3 +1,5 @@
 {
-  "coc.preferences.formatOnSave": true
+  "coc.preferences.formatOnSave": true,
+  "list.height": 40,
+  "pyright.disableDiagnostics": true
 }
