@@ -22,6 +22,8 @@ Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'tpope/vim-fugitive'
 Plugin 'vimpostor/vim-lumen'
 Plugin 'github/copilot.vim'
+Plugin 'prisma/vim-prisma'
+Plugin 'junegunn/vim-easy-align'
 call vundle#end()
 filetype plugin indent on
 
@@ -350,3 +352,11 @@ if system("powershell.exe Get-ItemProperty -Path
 else
    set background=light
 endif
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+command! BufOnly %bd|e#
