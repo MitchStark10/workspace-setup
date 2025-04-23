@@ -7,13 +7,11 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 "Plugins ---------------------------------------
-Plugin 'pangloss/vim-javascript'
 Plugin 'preservim/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'tpope/vim-commentary'
-Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'gko/vim-coloresque'
 Plugin 'vim-airline/vim-airline'
 Plugin 'preservim/nerdcommenter'
@@ -22,8 +20,15 @@ Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'tpope/vim-fugitive'
 Plugin 'vimpostor/vim-lumen'
 Plugin 'github/copilot.vim'
-Plugin 'prisma/vim-prisma'
 Plugin 'junegunn/vim-easy-align'
+
+" JS
+Plugin 'pangloss/vim-javascript'
+Plugin 'maxmellon/vim-jsx-pretty'
+Plugin 'prisma/vim-prisma'
+
+" Python
+Plugin 'andviro/flake8-vim'
 call vundle#end()
 filetype plugin indent on
 
@@ -323,7 +328,7 @@ nmap fb /<c-r>+<CR>
 nnoremap <C-s> :w<CR>
 vmap <c-_> \c<space><CR>
 nmap <c-_> \c<space><CR>
-let $FZF_DEFAULT_COMMAND = 'ag --hidden -g ""'
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 nmap <c-p> :FZF<CR>
 
 " Workaround for searching hidden folders
@@ -360,3 +365,13 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 command! BufOnly %bd|e#
+
+"flake 8 setup
+let g:PyFlakeMaxLineLength = 120
+let g:PyFlakeDisabledMessages = 'E201,E202,E203,E221,E241,E251,E272,W503,E741'
+
+noremap! <C-j> <Esc>
+vnoremap <C-j> <Esc>
+noremap! <C-g> <Esc>
+inoremap <C-p> "+gP
+nnoremap <C-i> <C-w>

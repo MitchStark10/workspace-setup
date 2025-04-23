@@ -4,100 +4,133 @@
   "actions": [
     {
       "command": {
+        "action": "newTab"
+      },
+      "id": "User.newTab.5DEADB41"
+    },
+    {
+      "command": "paste",
+      "id": "User.paste"
+    },
+    {
+      "command": "find",
+      "id": "User.find"
+    },
+    {
+      "command": {
         "action": "splitPane",
         "split": "auto",
         "splitMode": "duplicate"
       },
-      "id": "User.splitPane.A6751878",
-      "keys": "alt+shift+d"
-    },
-    {
-      "command": {
-        "action": "newTab"
-      },
-      "id": "User.newTab.5DEADB41",
-      "keys": "ctrl+t"
-    },
-    {
-      "command": "unbound",
-      "keys": "ctrl+shift+t"
-    },
-    {
-      "command": "unbound",
-      "keys": "ctrl+shift+tab"
-    },
-    {
-      "command": "unbound",
-      "keys": "ctrl+tab"
-    },
-    {
-      "command": "unbound",
-      "keys": "ctrl+shift+f"
-    },
-    {
-      "command": "unbound",
-      "keys": "ctrl+v"
-    },
-    {
-      "command": "unbound",
-      "keys": "ctrl+right"
-    },
-    {
-      "command": "unbound",
-      "keys": "ctrl+left"
-    },
-    {
-      "command": {
-        "action": "copy",
-        "singleLine": false
-      },
-      "id": "User.copy.644BA8F2",
-      "keys": "ctrl+c"
+      "id": "User.splitPane.A6751878"
     },
     {
       "command": {
         "action": "moveTab",
         "direction": "forward"
       },
-      "id": "User.moveTab.793E2350",
-      "keys": "ctrl+shift+right"
-    },
-    {
-      "command": "paste",
-      "id": "User.paste",
-      "keys": "ctrl+shift+v"
-    },
-    {
-      "command": "find",
-      "id": "User.find",
-      "keys": "ctrl+f"
+      "id": "User.moveTab.793E2350"
     },
     {
       "command": {
-        "action": "prevTab"
+        "action": "copy",
+        "singleLine": false
       },
-      "id": "User.prevTab.0",
-      "keys": "ctrl+h"
-    },
-    {
-      "command": {
-        "action": "nextTab"
-      },
-      "id": "User.nextTab.0",
-      "keys": "ctrl+l"
+      "id": "User.copy.644BA8F2"
     },
     {
       "command": {
         "action": "moveTab",
         "direction": "backward"
       },
-      "id": "User.moveTab.EF07D31B",
-      "keys": "ctrl+shift+left"
+      "id": "User.moveTab.EF07D31B"
+    },
+    {
+      "command": {
+        "action": "prevTab"
+      },
+      "id": "User.prevTab.0"
+    },
+    {
+      "command": {
+        "action": "nextTab"
+      },
+      "id": "User.nextTab.0"
     }
   ],
   "copyFormatting": "none",
   "copyOnSelect": false,
   "defaultProfile": "{2c4de342-38b7-51cf-b940-2309a097f518}",
+  "keybindings": [
+    {
+      "id": null,
+      "keys": "ctrl+tab"
+    },
+    {
+      "id": "User.copy.644BA8F2",
+      "keys": "ctrl+c"
+    },
+    {
+      "id": null,
+      "keys": "ctrl+shift+tab"
+    },
+    {
+      "id": "User.newTab.5DEADB41",
+      "keys": "ctrl+t"
+    },
+    {
+      "id": "User.splitPane.A6751878",
+      "keys": "alt+shift+d"
+    },
+    {
+      "id": "User.moveTab.793E2350",
+      "keys": "ctrl+shift+l"
+    },
+    {
+      "id": null,
+      "keys": "ctrl+shift+t"
+    },
+    {
+      "id": null,
+      "keys": "ctrl+v"
+    },
+    {
+      "id": "User.find",
+      "keys": "ctrl+shift+f"
+    },
+    {
+      "id": null,
+      "keys": "ctrl+right"
+    },
+    {
+      "id": null,
+      "keys": "ctrl+left"
+    },
+    {
+      "id": null,
+      "keys": "ctrl+shift+left"
+    },
+    {
+      "id": null,
+      "keys": "ctrl+shift+right"
+    },
+    {
+      "id": "User.paste",
+      "keys": "ctrl+shift+v"
+    },
+    {
+      "id": "User.prevTab.0",
+      "keys": "ctrl+h"
+    },
+    {
+      "id": "User.nextTab.0",
+      "keys": "ctrl+l"
+    },
+    {
+      "id": "User.moveTab.EF07D31B",
+      "keys": "ctrl+shift+h"
+    }
+  ],
   "newTabMenu": [
     {
       "type": "remainingProfiles"
@@ -105,13 +138,18 @@
   ],
   "profiles": {
     "defaults": {
-      "bellStyle": "none",
       "colorScheme": {
         "dark": "Campbell",
         "light": "Solarized Light"
       }
     },
     "list": [
+      {
+        "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+        "hidden": false,
+        "name": "Windows PowerShell"
+      },
       {
         "commandline": "%SystemRoot%\\System32\\cmd.exe",
         "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
@@ -131,6 +169,7 @@
         "source": "CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc"
       },
       {
+        "bellStyle": "none",
         "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
         "hidden": true,
         "name": "Ubuntu",
@@ -141,16 +180,11 @@
         "hidden": false,
         "name": "Git Bash",
         "source": "Git"
-      },
-      {
-        "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
-        "hidden": false,
-        "name": "PowerShell",
-        "source": "Windows.Terminal.PowershellCore"
       }
     ]
   },
   "schemes": [],
+  "startOnUserLogin": true,
   "theme": "system",
   "themes": []
 }
