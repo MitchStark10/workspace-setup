@@ -368,7 +368,7 @@ command! BufOnly %bd|e#
 
 "flake 8 setup
 let g:PyFlakeMaxLineLength = 120
-let g:PyFlakeDisabledMessages = 'E201,E202,E203,E221,E241,E251,E272,W503,E741'
+let g:PyFlakeDisabledMessages = 'E201,E202,E203,E221,E231,E241,E251,E272,W503,E702,E741'
 
 noremap! <C-j> <Esc>
 vnoremap <C-j> <Esc>
