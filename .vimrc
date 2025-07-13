@@ -20,11 +20,12 @@ Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'tpope/vim-fugitive'
 Plugin 'vimpostor/vim-lumen'
 Plugin 'github/copilot.vim'
+Plugin 'DanBradbury/copilot-chat.vim'
 Plugin 'junegunn/vim-easy-align'
 
 " JS
 Plugin 'pangloss/vim-javascript'
-Plugin 'maxmellon/vim-jsx-pretty'
+" Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'prisma/vim-prisma'
 
 " Python
@@ -321,7 +322,7 @@ let g:airline_section_y = ""
 "General Aliases---------------------------------
 nmap [o :History<CR>
 nmap fn :NERDTreeFind<CR>
-nmap ff :OR<CR>
+nmap ff :Prettier<CR>
 nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap fb /<c-r>+<CR>
@@ -338,6 +339,7 @@ nmap <c-f> :Ag<CR>
 nnoremap <c-k> :redr!<CR>
 command! DiffOrig rightbelow vertical new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command! T terminal
+command CC CopilotChatOpen
 
 " Color scheme handling
 command! Light set background=light
@@ -375,3 +377,6 @@ vnoremap <C-j> <Esc>
 noremap! <C-g> <Esc>
 inoremap <C-p> "+gP
 nnoremap <C-i> <C-w>
+
+" Weird timeout issue on mac
+set re=0
