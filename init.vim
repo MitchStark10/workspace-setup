@@ -1,270 +1,203 @@
-call plug#begin('~/.vim/plugged')
+"==============================================================================
+" => General
+"==============================================================================
 
-Plug 'scrooloose/nerdtree'
-Plug 'morhetz/gruvbox'
+" Set the leader key to space
+let mapleader = " "
 
-Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " autocomplete, prettier, eslint
-let g:coc_global_extensions = ['coc-html', 'coc-json', 'coc-eslint', 'coc-tsserver', 'coc-prisma']  " list of CoC extensions needed
+" Map ctrl+j to escape
+inoremap <C-j> <Esc>
+nnoremap <C-j> <Esc>
 
-" Get linter setup
-Plug 'w0rp/ale'
-let g:ale_fixers = {'javascript': ['eslint', 'prettier'], 'typescript': ['eslint', 'prettier'] }
-let g:ale_linters = {'javascript': ['eslint', 'prettier'], 'typescript': ['eslint', 'prettier']}
-let g:ale_sign_error = '❌'
-let g:ale_sign_warning = '⚠️'
-let g:ale_fix_on_save = 0
-let g:ale_linter_aliases = {'typescriptreact': 'typescript'}
+nnoremap <C-i> <C-w>
 
-" Disable ALE on JSON files
-let g:ale_pattern_options = {'\.json$': {'ale_enabled': 0}}
+" Enable syntax highlighting
+syntax on
+
+" Enable filetype detection and plugins
+filetype plugin indent on
+
+" Set encoding to UTF-8
+set encoding=utf-8
+
+" Set line numbers
+set number
+
+" Set relative line numbers
+set relativenumber
+
+" Highlight current line
+set cursorline
+
+" Enable mouse support
+set mouse=a
+
+" Case insensitive
+set ignorecase
+
+" Set tab width to 4 spaces
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
+" Enable persistent undo
+set undofile
+set undodir=~/.config/nvim/undodir
 
 
-Plug 'jiangmiao/auto-pairs' " auto close ( [ {
+" WSL clipboard support
+set clipboard=unnamedplus
 
-Plug 'yuezk/vim-js'
-Plug 'HerringtonDarkholme/yats.vim'
-Plug 'maxmellon/vim-jsx-pretty'
+"==============================================================================
+" => Package Manager (vim-plug)
+"==============================================================================
 
-" FZF for fuzzy finding files and text
+" Auto-install vim-plug if not found
+if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
+
+" Plugin list
+call plug#begin('~/.local/share/nvim/plugged')
+
+" File explorer
+Plug 'preservim/nerdtree'
+
+" Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
-" Typescript react support
-Plug 'ianks/vim-tsx'
+" LSP support
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-
-Plug 'NLKNguyen/papercolor-theme'
-
-" LSP Support
-" NOTE: <space>ca in normal mode will trigger a prompt for code actions
-" available. This can be used for auto importing
-Plug 'neovim/nvim-lspconfig', {'do': 'npm i -g typescript-language-server diagnostic-languageserver'}
-
-
-Plug 'hashivim/vim-terraform'
-
-Plug 'f-person/git-blame.nvim'
-
-Plug 'mbbill/undotree'
-
-" Normal mode comment: gcc
-" Visual mode comment: gc
-Plug 'https://github.com/tpope/vim-commentary'
-
-" LuaLine
-Plug 'nvim-lualine/lualine.nvim'
-Plug 'kyazdani42/nvim-web-devicons'
-" brew tap caskroom/fonts
-" brew cask install font-hack-nerd-font
-
-Plug 'kabouzeid/nvim-lspinstall'
+" Autocompletion
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
 
 call plug#end()
 
-set nowrap
-set smartcase
+"==============================================================================
+" => Plugin Configuration
+"==============================================================================
 
-" Use system clipboard
-set clipboard+=unnamedplus
+" NERDTree
+" Open NERDTree with Ctrl+n
+map <C-n> :NERDTreeToggle<CR>
 
-" Theme updates
-set background=dark
-colorscheme PaperColor
-set encoding=utf8
-let g:airline_powerline_fonts = 1
-
-" Nerdtree keymap
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
-nnoremap tt :NERDTreeToggle<CR>
+" Find current file in NERDTree
 nnoremap fn :NERDTreeFind<CR>
-nnoremap fa :ALEFix<CR>
 
-" Use spaces instead of tabs
-set expandtab
+" FZF
+" Find files with Ctrl+p
+map <C-p> :Files<CR>
 
-" Aliases to go to next and previous eslint error
-nmap <silent> ]] :ALENext<cr>
-nmap <silent> [[ :ALEPrevious<cr>
-
-
-nnoremap <C-p> :GFiles<CR>
-nnoremap <C-f> :Ag<CR>
-
-" Alias file history command
-nnoremap [o :History<cr>
-
-autocmd FileType css,json CocDisable
-autocmd FileType ts,js,tsx,jsx CocEnable
-
-set number
-
-set tabstop=4
-set shiftwidth=4
-
-" force searches to ignore .gitignore files but find files that start with .
-let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
-
-" Prettier config
-" These are disabled becuase they can be painful with ale, so just run it
-" manually with <ff>
-" let g:prettier#autoformat = 1
-" let g:prettier#autoformat_require_pragma = 0
-" let g:prettier#config#single_quote = 'true'
-nnoremap ff :Prettier<CR>
-
-set exrc
-set secure
-
-nnoremap <silent> <S-Up> <C-w>w<CR>
-nnoremap <silent> <S-u> :UndotreeToggle<CR>
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
+" LSP and Autocompletion Configuration
 lua << EOF
-local nvim_lsp = require("lspconfig")
-local format_async = function(err, _, result, _, bufnr)
-    if err ~= nil or result == nil then return end
-    if not vim.api.nvim_buf_get_option(bufnr, "modified") then
-        local view = vim.fn.winsaveview()
-        vim.lsp.util.apply_text_edits(result, bufnr)
-        vim.fn.winrestview(view)
-        if bufnr == vim.api.nvim_get_current_buf() then
-            vim.api.nvim_command("noautocmd :update")
-        end
-    end
-end
-vim.lsp.handlers["textDocument/formatting"] = format_async
-_G.lsp_organize_imports = function()
-    local params = {
-        command = "_typescript.organizeImports",
-        arguments = {vim.api.nvim_buf_get_name(0)},
-        title = ""
-    }
-    vim.lsp.buf.execute_command(params)
-end
-
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
+-- LSP config
 local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
+  print('testing')
   -- Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
-
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
-  buf_set_keymap('n', '<space>[', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', '<space>]', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '[[', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
 end
 
-nvim_lsp.tsserver.setup {
-    on_attach = function(client, bufnr)
-        client.server_capabilities.documentFormattingProvider = false
-        on_attach(client, bufnr)
-    end
-}
+local lspconfig = require('lspconfig')
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-local filetypes = {
-    typescript = "eslint",
-    typescriptreact = "eslint",
-}
-local linters = {
-    eslint = {
-        sourceName = "eslint",
-        command = "eslint_d",
-        rootPatterns = {".eslintrc.js", "package.json"},
-        debounce = 100,
-        args = {"--stdin", "--stdin-filename", "%filepath", "--format", "json"},
-        parseJson = {
-            errorsRoot = "[0].messages",
-            line = "line",
-            column = "column",
-            endLine = "endLine",
-            endColumn = "endColumn",
-            message = "${message} [${ruleId}]",
-            security = "severity"
-        },
-        securities = {[2] = "error", [1] = "warning"}
-    }
-}
-local formatters = {
-    prettier = {command = "prettier", args = {"--stdin-filepath", "%filepath"}}
-}
-local formatFiletypes = {
-    typescript = "prettier",
-    typescriptreact = "prettier"
-}
-nvim_lsp.diagnosticls.setup {
-    on_attach = on_attach,
-    filetypes = vim.tbl_keys(filetypes),
-    init_options = {
-        filetypes = filetypes,
-        linters = linters,
-        formatters = formatters,
-        formatFiletypes = formatFiletypes
-    }
-}
+-- Mason setup
+require("mason").setup()
+require("mason-lspconfig").setup({
+  ensure_installed = { "ts_ls", "pyright", "omnisharp" },
+  automatic_enable = { "ts_ls", "pyright", "omnisharp" },
+})
 
-require('lualine').setup {
-  options = {
-    icons_enabled = true,
-    theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
-    disabled_filetypes = {},
-    always_divide_middle = true,
-    globalstatus = false,
+
+lspconfig.ts_ls.setup({
+  on_attach = on_attach
+})
+
+lspconfig.pyright.setup({
+  on_attach = on_attach
+})
+
+lspconfig.omnisharp.setup({
+  on_attach = on_attach
+})
+
+-- nvim-cmp setup
+local cmp = require('cmp')
+local cmp_select = { behavior = cmp.SelectBehavior.Select }
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      -- For `vsnip` user.
+      -- vim.fn["vsnip#anonymous"](args.body)
+
+      -- For `luasnip` user.
+      -- require('luasnip').lsp_expand(args.body)
+
+      -- For `ultisnips` user.
+      -- vim.fn.UltiSnips_Anon(args.body)
+    end,
   },
-  sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
-    lualine_y = {},
-    lualine_z = {}
-  },
-  tabline = {},
-  extensions = {}
-}
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'buffer' },
+    { name = 'path' },
+  })
+})
 
-
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  })
+})
 
 EOF
+
+"==============================================================================
+" => Final Touches
+"==============================================================================
+" Create undo directory
+silent !mkdir -p ~/.config/nvim/undodir
