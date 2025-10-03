@@ -23,9 +23,6 @@ set encoding=utf-8
 " Set line numbers
 set number
 
-" Set relative line numbers
-set relativenumber
-
 " Highlight current line
 set cursorline
 
@@ -35,10 +32,48 @@ set mouse=a
 " Case insensitive
 set ignorecase
 
-" Set tab width to 4 spaces
-set tabstop=4
-set shiftwidth=4
+" Enable intelligent tab detection
+set tabstop=2
+set shiftwidth=2
 set expandtab
+syntax on
+set backspace=2
+set number
+set mouse=a
+
+" Detect indentation from file content
+autocmd BufReadPost * if !exists('b:editorconfig') | call DetectIndent() | endif
+
+function! DetectIndent()
+    let l:sample_lines = min([line('$'), 100])
+    let l:spaces = {}
+
+    for l:lnum in range(1, l:sample_lines)
+        let l:line = getline(l:lnum)
+        let l:indent = matchstr(l:line, '^\s\+')
+        if !empty(l:indent) && l:indent[0] == ' '
+            let l:count = len(l:indent)
+            let l:spaces[l:count] = get(l:spaces, l:count, 0) + 1
+        endif
+    endfor
+
+    " Find most common indent size
+    let l:max_count = 0
+    let l:detected = 4
+    for [l:size, l:count] in items(l:spaces)
+        if l:count > l:max_count
+            let l:max_count = l:count
+            let l:detected = str2nr(l:size)
+        endif
+    endfor
+
+    " Set buffer-local settings
+    if l:max_count > 0
+        execute 'setlocal tabstop=' . l:detected
+    else
+        setlocal tabstop=4  " Default fallback
+    endif
+endfunction
 
 " Enable persistent undo
 set undofile
@@ -78,6 +113,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'seblj/roslyn.nvim'
 
 " Autocompletion
 Plug 'hrsh7th/nvim-cmp'
@@ -85,6 +121,24 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
+
+" Treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" Color schemes
+Plug 'folke/tokyonight.nvim'
+
+" Prettier formatter
+Plug 'prettier/vim-prettier', { 'do': 'npm install --frozen-lockfile --production' }
+
+" GitHub Copilot
+Plug 'github/copilot.vim'
+
+" Git integration
+Plug 'tpope/vim-fugitive'
+
+" Commenting
+Plug 'tpope/vim-commentary'
 
 call plug#end()
 
@@ -100,14 +154,37 @@ map <C-n> :NERDTreeToggle<CR>
 nnoremap fn :NERDTreeFind<CR>
 
 " FZF
+" Enable search history
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+
 " Find files with Ctrl+p
 map <C-p> :Files<CR>
+
+" Show recent buffers with Ctrl+b
+map <C-b> :Buffers<CR>
+
+map <C-f> :Ag<CR>
+
+" Prettier
+" Format on save for JS/TS files
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_require_pragma = 0
+
+" Format with leader+p
+nnoremap <leader>p :Prettier<CR>
+
+" Fugitive (Git)
+" Create GBlame command
+command! GBlame Git blame
+
+" Commentary
+" Map Ctrl+/ to toggle comments in visual mode (Ctrl+/ sends <C-_> in terminals)
+vmap <C-_> gc
 
 " LSP and Autocompletion Configuration
 lua << EOF
 -- LSP config
 local on_attach = function(client, bufnr)
-  print('testing')
   -- Enable completion triggered by <c-x><c-o>
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
@@ -131,17 +208,20 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '[[', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', ']a', '<cmd>lua vim.diagnostic.setqflist()<CR>', opts)
 end
 
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- Mason setup
-require("mason").setup()
-require("mason-lspconfig").setup({
-  ensure_installed = { "ts_ls", "pyright", "omnisharp" },
-  automatic_enable = { "ts_ls", "pyright", "omnisharp" },
+require("mason").setup({
+    registries = {
+        "github:Crashdummyy/mason-registry",
+        "github:mason-org/mason-registry",
+    }
 })
+require("mason-lspconfig").setup()
 
 
 lspconfig.ts_ls.setup({
@@ -152,9 +232,12 @@ lspconfig.pyright.setup({
   on_attach = on_attach
 })
 
-lspconfig.omnisharp.setup({
-  on_attach = on_attach
+vim.lsp.config("roslyn", {
+  on_attach = on_attach,
+  capabilities = capabilities,
 })
+
+require('roslyn').setup({})
 
 -- nvim-cmp setup
 local cmp = require('cmp')
@@ -193,6 +276,70 @@ cmp.setup.cmdline(':', {
     { name = 'path' }
   })
 })
+
+-- Treesitter setup
+require('nvim-treesitter.configs').setup({
+  ensure_installed = { "javascript", "typescript", "tsx", "c_sharp" },
+  sync_install = false,
+  auto_install = true,
+  highlight = {
+    enable = true,
+  },
+  indent = {
+    enable = true,
+  },
+})
+
+-- Theme configuration
+local function set_theme()
+  -- Check OS theme (for WSL, check Windows theme)
+  local handle = io.popen('powershell.exe -Command "(Get-ItemProperty -Path HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize).AppsUseLightTheme" 2>/dev/null')
+  if handle then
+    local result = handle:read("*a")
+    handle:close()
+
+    if result:match("1") then
+      vim.o.background = "light"
+      vim.cmd("colorscheme tokyonight-day")
+    else
+      vim.o.background = "dark"
+      vim.cmd("colorscheme tokyonight-night")
+    end
+  else
+    -- Fallback to dark theme if detection fails
+    vim.o.background = "dark"
+    vim.cmd("colorscheme tokyonight-night")
+  end
+end
+
+-- Set theme on startup
+set_theme()
+
+-- Command to manually switch to light mode
+vim.api.nvim_create_user_command('Light', function()
+  vim.o.background = "light"
+  vim.cmd("colorscheme tokyonight-day")
+end, {})
+
+-- Command to manually switch to dark mode
+vim.api.nvim_create_user_command('Dark', function()
+  vim.o.background = "dark"
+  vim.cmd("colorscheme tokyonight-night")
+end, {})
+
+-- Command to organize and remove unused imports
+vim.api.nvim_create_user_command('OR', function()
+  vim.lsp.buf.code_action({
+    context = { only = { "source.organizeImports", "source.removeUnusedImports" } },
+    apply = true,
+  })
+end, {})
+
+-- Command to open terminal
+vim.api.nvim_create_user_command('T', function()
+  vim.cmd('split | terminal')
+  vim.cmd('resize 15')
+end, {})
 
 EOF
 
