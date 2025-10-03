@@ -1,7 +1,6 @@
 "==============================================================================
 " => General
 "==============================================================================
-
 " Set the leader key to space
 let mapleader = " "
 
@@ -223,14 +222,15 @@ require("mason").setup({
 })
 require("mason-lspconfig").setup()
 
-
-lspconfig.ts_ls.setup({
+vim.lsp.config("ts_ls", {
   on_attach = on_attach
 })
+vim.lsp.enable("ts_ls")
 
-lspconfig.pyright.setup({
+vim.lsp.config("pyright", {
   on_attach = on_attach
 })
+vim.lsp.enable("pyright")
 
 vim.lsp.config("roslyn", {
   on_attach = on_attach,
