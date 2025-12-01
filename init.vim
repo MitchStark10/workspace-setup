@@ -123,6 +123,7 @@ Plug 'hrsh7th/cmp-cmdline'
 
 " Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-context'
 
 " Color schemes
 Plug 'folke/tokyonight.nvim'
@@ -138,6 +139,9 @@ Plug 'tpope/vim-fugitive'
 
 " Commenting
 Plug 'tpope/vim-commentary'
+
+" Linting
+Plug 'mfussenegger/nvim-lint'
 
 call plug#end()
 
@@ -208,6 +212,7 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', ']a', '<cmd>lua vim.diagnostic.setqflist()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', ']e', '<cmd>lua vim.diagnostic.setqflist({severity = vim.diagnostic.severity.ERROR})<CR>', opts)
 end
 
 local lspconfig = require('lspconfig')
@@ -228,7 +233,51 @@ vim.lsp.config("ts_ls", {
 vim.lsp.enable("ts_ls")
 
 vim.lsp.config("pyright", {
-  on_attach = on_attach
+  on_attach = on_attach,
+  root_dir = function(fname)
+    local util = require('lspconfig.util')
+    -- Look for common Python project markers
+    local root = util.root_pattern('.git', 'setup.py', 'setup.cfg', 'pyproject.toml', 'requirements.txt', 'manage.py')(fname)
+    return root or vim.fn.getcwd()
+  end,
+  before_init = function(_, config)
+    -- Try to detect virtual environment
+    local venv_paths = {
+      vim.fn.getcwd() .. '/venv',
+      vim.fn.getcwd() .. '/.venv',
+      vim.env.VIRTUAL_ENV,
+    }
+
+    for _, venv in ipairs(venv_paths) do
+      if venv and vim.fn.isdirectory(venv) == 1 then
+        config.settings.python.pythonPath = venv .. '/bin/python'
+        break
+      end
+    end
+  end,
+  settings = {
+    python = {
+      pythonPath = vim.env.VIRTUAL_ENV and (vim.env.VIRTUAL_ENV .. '/bin/python') or nil,
+      analysis = {
+        typeCheckingMode = "basic",  -- Use basic instead of strict
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = "workspace",
+        reportMissingImports = false,
+        reportMissingTypeStubs = false,  -- Suppress missing type stubs errors
+        reportUnknownMemberType = false,
+        reportUnknownArgumentType = false,
+        reportUnknownVariableType = false,
+        reportUnknownParameterType = false,
+        reportGeneralTypeIssues = false,  -- Suppress general type issues
+        diagnosticSeverityOverrides = {
+          reportOptionalMemberAccess = "none",
+          reportOptionalSubscript = "none",
+          reportOptionalCall = "none",
+        }
+      }
+    }
+  }
 })
 vim.lsp.enable("pyright")
 
@@ -290,6 +339,9 @@ require('nvim-treesitter.configs').setup({
   },
 })
 
+-- Treesitter context setup
+require('treesitter-context').setup()
+
 -- Theme configuration
 local function set_theme()
   -- Check OS theme (for WSL, check Windows theme)
@@ -340,6 +392,19 @@ vim.api.nvim_create_user_command('T', function()
   vim.cmd('split | terminal')
   vim.cmd('resize 15')
 end, {})
+
+-- nvim-lint configuration
+require('lint').linters_by_ft = {
+  python = {'flake8'}
+}
+
+-- Run linter on save and when entering buffer
+vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter", "InsertLeave" }, {
+  pattern = "*.py",
+  callback = function()
+    require("lint").try_lint()
+  end,
+})
 
 EOF
 
