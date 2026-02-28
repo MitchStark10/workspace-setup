@@ -1,0 +1,61 @@
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git status"
+decision = "allow"
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git st"
+decision = "allow" 
+
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = ""
+decision = "allow"
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git ls-remote"
+decision = "allow"
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git ls-remote"
+decision = "allow"
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git fetch"
+decision = "allow"
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "npm run lint"
+decision = "allow"
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "npm run type-check"
+decision = "allow"
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "create-new-feature.sh"
+decision = "allow"
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "check-prerequisites.sh"
+decision = "allow"  
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "setup-plan.sh"
+decision = "allow"  
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "update-agent-context.sh gemini"
+decision = "allow"
+
