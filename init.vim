@@ -327,7 +327,7 @@ cmp.setup.cmdline(':', {
 })
 
 -- Treesitter setup
-require('nvim-treesitter.configs').setup({
+require('nvim-treesitter').setup({
   ensure_installed = { "javascript", "typescript", "tsx", "c_sharp", "python" },
   sync_install = false,
   auto_install = true,
