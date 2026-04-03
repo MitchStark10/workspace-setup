@@ -1,13 +1,15 @@
-function proj {
-    Set-Location C:/Users/Mitch/projects/soccersage.io;
-}
+# Generic PowerShell Profile
 
 function home {
-    Set-Location C:/Users/Mitch;
+    Set-Location $HOME;
 }
 
 function cleanBranches {
-  git branch --merged | Select-String -Pattern '^(?!.*(master|dev|release|main)).*$' | ForEach-Object { git branch -d $_.ToString().Trim() }
+    git branch --merged | Select-String -Pattern '^(?!.*(master|dev|release|main)).*$' | ForEach-Object { git branch -d $_.ToString().Trim() }
+}
+
+function stopAllDockerContainers {
+    docker stop $(docker ps -a -q)
 }
 
 function Write-BranchName () {
@@ -46,4 +48,12 @@ function prompt {
     }
 
     return $userPrompt
+}
+
+$nvimconfig = "$env:LOCALAPPDATA\nvim\init.vim"
+
+# Source work-specific configuration if it exists
+# $PSScriptRoot is the directory containing the profile script
+if (Test-Path "$PSScriptRoot\work.ps1") {
+    . "$PSScriptRoot\work.ps1"
 }
