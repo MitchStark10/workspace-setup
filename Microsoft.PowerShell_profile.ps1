@@ -50,6 +50,13 @@ function prompt {
     return $userPrompt
 }
 
+function localClaude {
+  lms server start --port 1234
+  $env:ANTHROPIC_BASE_URL="http://localhost:1234"
+  $env:ANTHROPIC_AUTH_TOKEN="lmstudio"
+  claude --model google/gemma-4-31b
+}
+
 $nvimconfig = "$env:LOCALAPPDATA\nvim\init.vim"
 
 # Source work-specific configuration if it exists

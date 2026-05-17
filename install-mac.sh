@@ -50,6 +50,13 @@ fi
 # 7. Neovim
 brew install neovim
 
+# 7.1 install vim-plug
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+# 7.2 setup nvim as default editor in terminal
+
+
 # 8. The Silver Searcher (ag)
 brew install the_silver_searcher
 
