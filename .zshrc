@@ -9,8 +9,6 @@ source $ZSH/oh-my-zsh.sh
 #Path Extensions
 export PATH=~/Library/Python/3.9/bin:~/bin:$PATH
 
-export CYPRESS_CACHE_FOLDER=/Users/mitchstark/Library/Caches/Cypress
-
 #Alias
 alias devNode="nvm use 16.15.1"
 alias ls="ls -al"
