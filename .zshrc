@@ -49,5 +49,12 @@ function cleanBranches() {
     done
 }
 
+function localClaude {
+  lms server start --port 1234
+  export ANTHROPIC_BASE_URL="http://localhost:1234"
+  export ANTHROPIC_AUTH_TOKEN="lmstudio"
+  claude --model google/gemma-4-31b
+}
+
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
