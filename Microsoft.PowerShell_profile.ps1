@@ -52,7 +52,7 @@ function prompt {
 
 function localClaude {
   lms server start --port 1234
-  lms load google/gemma-4-31b
+  lms load google/gemma-4-31b --context-length 30000
   $env:ANTHROPIC_BASE_URL="http://localhost:1234"
   $env:ANTHROPIC_AUTH_TOKEN="lmstudio"
   claude --model google/gemma-4-31b

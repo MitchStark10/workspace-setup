@@ -404,6 +404,8 @@ vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter", "InsertLeave" }, {
   end,
 })
 
+vim.opt.isfname:append("(",")")
+
 EOF
 
 "==============================================================================
