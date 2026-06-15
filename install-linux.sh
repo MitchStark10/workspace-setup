@@ -4,6 +4,9 @@
 
 echo "Starting Linux environment setup..."
 
+# Disable advanced tiling, just let me move my stuff around
+gsettings set org.gnome.shell.extensions.tiling-assistant enable-tiling-popup "false"
+
 # Ensure the package list is up to date and curl is installed
 echo "Updating package lists..."
 sudo apt update && sudo apt install -y curl build-essential wget gpg
