@@ -92,4 +92,22 @@ else
     echo "Docker is already installed."
 fi
 
+# 10. Spotify
+echo "Installing Spotify..."
+if ! command -v spotify &> /dev/null; then
+    curl -sS https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+    echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+    sudo apt update && sudo apt install -y spotify-client
+else
+    echo "Spotify is already installed."
+fi
+
+# 11. Bitwarden
+echo "Installing Bitwarden..."
+if ! command -v bitwarden &> /dev/null; then
+    sudo snap install bitwarden
+else
+    echo "Bitwarden is already installed."
+fi
+
 echo "Setup complete! Please log out and log back in (or restart your terminal) to apply all changes."

@@ -9,9 +9,9 @@ case "$(uname -s)" in
         ./install-mac.sh
         ;;
     Linux)
-        echo "Linux detected (not explicitly requested, but often works with macOS script)."
-        chmod +x ./install-mac.sh
-        ./install-mac.sh
+        echo "Detected Linux."
+        chmod +x ./install-linux.sh
+        ./install-linux.sh
         ;;
     MINGW*|MSYS*|CYGWIN*)
         echo "Detected Windows (via Shell)."
