@@ -2,6 +2,27 @@
 
 Write-Host "Starting Windows environment setup..." -ForegroundColor Cyan
 
+# 0. Dotfiles Symlinking
+Write-Host "Setting up dotfiles..." -ForegroundColor Cyan
+$REPO_BASHRC = Join-Path $PSScriptRoot ".bashrc"
+$HOME_BASHRC = Join-Path $HOME ".bashrc"
+
+if (Test-Path $REPO_BASHRC) {
+    $item = Get-Item $HOME_BASHRC -ErrorAction SilentlyContinue
+    if ($item -and $item.Attributes -match "ReparsePoint") {
+        Write-Host ".bashrc is already a symlink." -ForegroundColor Green
+    } else {
+        if (Test-Path $HOME_BASHRC) {
+            Write-Host "Backing up existing .bashrc to .bashrc.bak" -ForegroundColor Yellow
+            Move-Item $HOME_BASHRC "$HOME_BASHRC.bak" -Force
+        }
+        Write-Host "Creating symlink for .bashrc..." -ForegroundColor Yellow
+        New-Item -Path $HOME_BASHRC -ItemType SymbolicLink -Value $REPO_BASHRC
+    }
+} else {
+    Write-Host "Warning: .bashrc not found in repo, skipping symlink." -ForegroundColor Gray
+}
+
 # Ensure Winget is available
 if (!(Get-Command winget -ErrorAction SilentlyContinue)) {
     Write-Error "winget not found. Please install it from the Microsoft Store."

@@ -4,6 +4,27 @@
 
 echo "Starting macOS environment setup..."
 
+# 0. Dotfiles Symlinking
+echo "Setting up dotfiles..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_BASHRC="$SCRIPT_DIR/.bashrc"
+HOME_BASHRC="$HOME/.bashrc"
+
+if [ -f "$REPO_BASHRC" ]; then
+    if [ -L "$HOME_BASHRC" ]; then
+        echo ".bashrc is already a symlink."
+    else
+        if [ -f "$HOME_BASHRC" ]; then
+            echo "Backing up existing .bashrc to .bashrc.bak"
+            mv "$HOME_BASHRC" "$HOME_BASHRC.bak"
+        fi
+        echo "Creating symlink for .bashrc..."
+        ln -s "$REPO_BASHRC" "$HOME_BASHRC"
+    fi
+else
+    echo "Warning: $REPO_BASHRC not found, skipping symlink."
+fi
+
 # 1. Ensure Homebrew is installed
 if ! command -v brew &> /dev/null; then
     echo "Installing Homebrew..."
