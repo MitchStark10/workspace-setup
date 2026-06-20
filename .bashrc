@@ -145,3 +145,9 @@ alias gprunesquashmerged='git checkout -q main && git for-each-ref refs/heads/ "
 source ~/company.bashrc;
 
 nvm use default;
+
+. "$HOME/.local/bin/env"
+
+# Set Neovim as default editor
+export EDITOR='nvim'
+export VISUAL='nvim'

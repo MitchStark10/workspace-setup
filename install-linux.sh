@@ -25,6 +25,27 @@ else
     echo "Warning: $REPO_BASHRC not found, skipping symlink."
 fi
 
+# Setup init.vim symlink
+REPO_INIT_VIM="$SCRIPT_DIR/init.vim"
+NVIM_CONFIG_DIR="$HOME/.config/nvim"
+NVIM_INIT_VIM="$NVIM_CONFIG_DIR/init.vim"
+
+if [ -f "$REPO_INIT_VIM" ]; then
+    mkdir -p "$NVIM_CONFIG_DIR"
+    if [ -L "$NVIM_INIT_VIM" ]; then
+        echo "init.vim is already a symlink."
+    else
+        if [ -f "$NVIM_INIT_VIM" ]; then
+            echo "Backing up existing init.vim to init.vim.bak"
+            mv "$NVIM_INIT_VIM" "$NVIM_INIT_VIM.bak"
+        fi
+        echo "Creating symlink for init.vim..."
+        ln -s "$REPO_INIT_VIM" "$NVIM_INIT_VIM"
+    fi
+else
+    echo "Warning: $REPO_INIT_VIM not found, skipping symlink."
+fi
+
 # Disable advanced tiling, just let me move my stuff around
 gsettings set org.gnome.shell.extensions.tiling-assistant enable-tiling-popup "false"
 
