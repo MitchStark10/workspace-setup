@@ -148,6 +148,9 @@ nvm use default;
 
 . "$HOME/.local/bin/env"
 
+export DOTNET_ROOT=$HOME/.dotnet
+export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
+
 # Set Neovim as default editor
 export EDITOR='nvim'
 export VISUAL='nvim'
