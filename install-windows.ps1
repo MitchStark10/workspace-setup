@@ -23,29 +23,38 @@ if (Test-Path $REPO_BASHRC) {
     Write-Host "Warning: .bashrc not found in repo, skipping symlink." -ForegroundColor Gray
 }
 
-# Setup init.vim symlink
-$REPO_INIT_VIM = Join-Path $PSScriptRoot "init.vim"
+# Setup nvim config symlinks (init.lua, lua/, lazy-lock.json)
 $NVIM_CONFIG_DIR = Join-Path $HOME ".config\nvim"
-$NVIM_INIT_VIM = Join-Path $NVIM_CONFIG_DIR "init.vim"
-
-if (Test-Path $REPO_INIT_VIM) {
-    if (!(Test-Path $NVIM_CONFIG_DIR)) {
-        New-Item -Path $NVIM_CONFIG_DIR -ItemType Directory -Force | Out-Null
-    }
-    $item = Get-Item $NVIM_INIT_VIM -ErrorAction SilentlyContinue
-    if ($item -and $item.Attributes -match "ReparsePoint") {
-        Write-Host "init.vim is already a symlink." -ForegroundColor Green
-    } else {
-        if (Test-Path $NVIM_INIT_VIM) {
-            Write-Host "Backing up existing init.vim to init.vim.bak" -ForegroundColor Yellow
-            Move-Item $NVIM_INIT_VIM "$NVIM_INIT_VIM.bak" -Force
-        }
-        Write-Host "Creating symlink for init.vim..." -ForegroundColor Yellow
-        New-Item -Path $NVIM_INIT_VIM -ItemType SymbolicLink -Value $REPO_INIT_VIM
-    }
-} else {
-    Write-Host "Warning: init.vim not found in repo, skipping symlink." -ForegroundColor Gray
+if (!(Test-Path $NVIM_CONFIG_DIR)) {
+    New-Item -Path $NVIM_CONFIG_DIR -ItemType Directory -Force | Out-Null
 }
+
+function Link-NvimFile {
+    param([string]$Name)
+    $repoPath = Join-Path $PSScriptRoot $Name
+    $targetPath = Join-Path $NVIM_CONFIG_DIR $Name
+
+    if (!(Test-Path $repoPath)) {
+        Write-Host "Warning: $Name not found in repo, skipping symlink." -ForegroundColor Gray
+        return
+    }
+
+    $item = Get-Item $targetPath -ErrorAction SilentlyContinue
+    if ($item -and $item.Attributes -match "ReparsePoint") {
+        Write-Host "$Name is already a symlink." -ForegroundColor Green
+    } else {
+        if (Test-Path $targetPath) {
+            Write-Host "Backing up existing $Name to $Name.bak" -ForegroundColor Yellow
+            Move-Item $targetPath "$targetPath.bak" -Force
+        }
+        Write-Host "Creating symlink for $Name..." -ForegroundColor Yellow
+        New-Item -Path $targetPath -ItemType SymbolicLink -Value $repoPath | Out-Null
+    }
+}
+
+Link-NvimFile "init.lua"
+Link-NvimFile "lua"
+Link-NvimFile "lazy-lock.json"
 
 # Ensure Winget is available
 if (!(Get-Command winget -ErrorAction SilentlyContinue)) {
@@ -95,9 +104,7 @@ if (!(Get-Command uv -ErrorAction SilentlyContinue)) {
 # 6. Neovim
 Install-WingetPackage "Neovim.Neovim" "Neovim"
 
-# 6.1 Install vim-plug for neovim
-iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
-    ni "$(@($env:XDG_DATA_HOME, $env:LOCALAPPDATA)[$null -eq $env:XDG_DATA_HOME])/nvim-data/site/autoload/plug.vim" -Force
+# 6.1 lazy.nvim self-bootstraps from init.lua on first launch, nothing to do here
 
 # 6.2 Setup nvim as default for git
 git config --global core.editor "nvim"

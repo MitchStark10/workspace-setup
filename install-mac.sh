@@ -25,26 +25,35 @@ else
     echo "Warning: $REPO_BASHRC not found, skipping symlink."
 fi
 
-# Setup init.vim symlink
-REPO_INIT_VIM="$SCRIPT_DIR/init.vim"
+# Setup nvim config symlinks (init.lua, lua/, lazy-lock.json)
 NVIM_CONFIG_DIR="$HOME/.config/nvim"
-NVIM_INIT_VIM="$NVIM_CONFIG_DIR/init.vim"
+mkdir -p "$NVIM_CONFIG_DIR"
 
-if [ -f "$REPO_INIT_VIM" ]; then
-    mkdir -p "$NVIM_CONFIG_DIR"
-    if [ -L "$NVIM_INIT_VIM" ]; then
-        echo "init.vim is already a symlink."
-    else
-        if [ -f "$NVIM_INIT_VIM" ]; then
-            echo "Backing up existing init.vim to init.vim.bak"
-            mv "$NVIM_INIT_VIM" "$NVIM_INIT_VIM.bak"
-        fi
-        echo "Creating symlink for init.vim..."
-        ln -s "$REPO_INIT_VIM" "$NVIM_INIT_VIM"
+link_nvim_file() {
+    local name="$1"
+    local repo_path="$SCRIPT_DIR/$name"
+    local target_path="$NVIM_CONFIG_DIR/$name"
+
+    if [ ! -e "$repo_path" ]; then
+        echo "Warning: $repo_path not found, skipping symlink."
+        return
     fi
-else
-    echo "Warning: $REPO_INIT_VIM not found, skipping symlink."
-fi
+
+    if [ -L "$target_path" ]; then
+        echo "$name is already a symlink."
+    else
+        if [ -e "$target_path" ]; then
+            echo "Backing up existing $name to $name.bak"
+            mv "$target_path" "$target_path.bak"
+        fi
+        echo "Creating symlink for $name..."
+        ln -s "$repo_path" "$target_path"
+    fi
+}
+
+link_nvim_file "init.lua"
+link_nvim_file "lua"
+link_nvim_file "lazy-lock.json"
 
 # 1. Ensure Homebrew is installed
 if ! command -v brew &> /dev/null; then
@@ -92,9 +101,7 @@ fi
 # 7. Neovim
 brew install neovim
 
-# 7.1 install vim-plug
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+# 7.1 lazy.nvim self-bootstraps from init.lua on first launch, nothing to do here
 
 # 7.2 setup nvim as default editor in terminal
 
