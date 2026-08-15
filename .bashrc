@@ -154,3 +154,7 @@ export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
 # Set Neovim as default editor
 export EDITOR='nvim'
 export VISUAL='nvim'
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/mitchellstark/.local/bin:$PATH"

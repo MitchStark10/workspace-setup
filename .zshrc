@@ -1,7 +1,7 @@
 # Fig pre block. Keep at the top of this file.
 [[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 # zsh configuration
-export ZSH="/Users/mitchstark/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 ZSH_DISABLE_COMPFIX=true
 source $ZSH/oh-my-zsh.sh
@@ -33,7 +33,8 @@ devNode
 #Git tools
 alias deleteOldBranches="git branch --merged | egrep -v \"(^\*|main|master|dev|sandbox)\" | xargs git branch -d"
 
-source ~/private.zshrc
+[ -f "$HOME/private.zshrc" ] && source "$HOME/private.zshrc"
+[ -f "$HOME/company.zshrc" ] && source "$HOME/company.zshrc"
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/terraform terraform
@@ -58,3 +59,6 @@ function localClaude {
 
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
+
+. "$HOME/.local/bin/env"
+export PATH="/opt/homebrew/opt/dotnet@8/bin:$PATH"
