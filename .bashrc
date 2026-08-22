@@ -158,3 +158,8 @@ export VISUAL='nvim'
 
 # Added by Antigravity CLI installer
 export PATH="/Users/mitchellstark/.local/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/mitchellstark/.lmstudio/bin"
+# End of LM Studio CLI section
+

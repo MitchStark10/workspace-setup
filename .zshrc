@@ -10,7 +10,6 @@ source $ZSH/oh-my-zsh.sh
 export PATH=~/Library/Python/3.9/bin:~/bin:$PATH
 
 #Alias
-alias devNode="nvm use 16.15.1"
 alias ls="ls -al"
 alias home="cd ~"
 alias editProfile="vim ~/.zshrc"
@@ -26,9 +25,6 @@ alias reset="rm -rf node_modules/ package-lock.json .next; npm i"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-#Default version of node
-devNode
 
 #Git tools
 alias deleteOldBranches="git branch --merged | egrep -v \"(^\*|main|master|dev|sandbox)\" | xargs git branch -d"
@@ -62,3 +58,8 @@ function localClaude {
 
 . "$HOME/.local/bin/env"
 export PATH="/opt/homebrew/opt/dotnet@8/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/mitchellstark/.lmstudio/bin"
+# End of LM Studio CLI section
+
