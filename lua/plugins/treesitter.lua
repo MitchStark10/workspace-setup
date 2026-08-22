@@ -1,21 +1,23 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  branch = "master",
+  branch = "main",
   build = ":TSUpdate",
   dependencies = {
     "nvim-treesitter/nvim-treesitter-context",
   },
   config = function()
-    require("nvim-treesitter.configs").setup({
-      ensure_installed = { "javascript", "typescript", "tsx", "c_sharp", "python" },
-      sync_install = false,
-      auto_install = true,
-      highlight = {
-        enable = true,
-      },
-      indent = {
-        enable = true,
-      },
+    local treesitter = require("nvim-treesitter")
+    local languages = { "javascript", "typescript", "tsx", "c_sharp", "python", "markdown", "markdown_inline" }
+
+    treesitter.setup()
+    treesitter.install(languages)
+
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "javascript", "typescript", "typescriptreact", "cs", "python", "markdown" },
+      callback = function()
+        vim.treesitter.start()
+        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end,
     })
 
     -- Override Treesitter's [[ and ]] mappings to prioritize LSP diagnostics
