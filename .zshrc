@@ -21,6 +21,7 @@ alias vim="nvim";
 alias nvimconfig="nvim ~/.config/nvim/init.vim"
 alias gprunesquashmerged='git checkout -q main && git for-each-ref refs/heads/ "--format=%(refname:short)" | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done'
 alias reset="rm -rf node_modules/ package-lock.json .next; npm i"
+alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -56,7 +57,6 @@ function localClaude {
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
 
-. "$HOME/.local/bin/env"
 export PATH="/opt/homebrew/opt/dotnet@8/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
