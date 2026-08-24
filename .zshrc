@@ -63,3 +63,4 @@ export PATH="/opt/homebrew/opt/dotnet@8/bin:$PATH"
 export PATH="$PATH:/Users/mitchellstark/.lmstudio/bin"
 # End of LM Studio CLI section
 
+export PATH="$HOME/.local/bin:$PATH"
