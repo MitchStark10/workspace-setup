@@ -64,3 +64,6 @@ export PATH="$PATH:/Users/mitchellstark/.lmstudio/bin"
 # End of LM Studio CLI section
 
 export PATH="$HOME/.local/bin:$PATH"
+
+# Docker desktop in the user space
+export PATH="$HOME/.docker/bin:$PATH"
