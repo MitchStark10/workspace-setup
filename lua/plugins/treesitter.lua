@@ -10,7 +10,20 @@ return {
     local languages = { "javascript", "typescript", "tsx", "c_sharp", "python", "markdown", "markdown_inline" }
 
     treesitter.setup()
-    treesitter.install(languages)
+
+    -- Only fetch grammars that are actually missing. Calling install()
+    -- unconditionally re-downloads and recompiles every grammar on every
+    -- startup, which competes with LSP attach for no benefit.
+    local installed = {}
+    for _, lang in ipairs(treesitter.get_installed("parsers")) do
+      installed[lang] = true
+    end
+    local missing = vim.tbl_filter(function(lang)
+      return not installed[lang]
+    end, languages)
+    if #missing > 0 then
+      treesitter.install(missing)
+    end
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "javascript", "typescript", "typescriptreact", "cs", "python", "markdown" },

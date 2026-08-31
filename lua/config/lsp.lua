@@ -2,48 +2,68 @@ local M = {}
 
 local function on_attach(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
-  vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+  vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
-  -- Mappings.
-  local opts = { noremap = true, silent = true }
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(
-    bufnr,
-    "n",
-    "<space>wl",
-    "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>",
-    opts
-  )
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "[[", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "]]", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "]a", "<cmd>lua vim.diagnostic.setqflist()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(
-    bufnr,
-    "n",
-    "]e",
-    "<cmd>lua vim.diagnostic.setqflist({severity = vim.diagnostic.severity.ERROR})<CR>",
-    opts
-  )
+  local function map(lhs, rhs)
+    vim.keymap.set("n", lhs, rhs, { noremap = true, silent = true, buffer = bufnr })
+  end
+
+  local has_fzf, fzf = pcall(require, "fzf-lua")
+
+  -- Navigation. Prefer fzf-lua pickers when available: they give a preview
+  -- window instead of dumping straight into the quickfix list.
+  map("gD", vim.lsp.buf.declaration)
+  map("gd", has_fzf and fzf.lsp_definitions or vim.lsp.buf.definition)
+  map("gi", has_fzf and fzf.lsp_implementations or vim.lsp.buf.implementation)
+  map("gr", has_fzf and fzf.lsp_references or vim.lsp.buf.references)
+  map("<space>D", has_fzf and fzf.lsp_typedefs or vim.lsp.buf.type_definition)
+  map("<space>s", has_fzf and fzf.lsp_document_symbols or vim.lsp.buf.document_symbol)
+  map("<space>S", has_fzf and fzf.lsp_live_workspace_symbols or vim.lsp.buf.workspace_symbol)
+
+  map("K", vim.lsp.buf.hover)
+  map("<C-k>", vim.lsp.buf.signature_help)
+  map("<space>rn", vim.lsp.buf.rename)
+  map("<space>ca", has_fzf and fzf.lsp_code_actions or vim.lsp.buf.code_action)
+
+  -- Workspace folders
+  map("<space>wa", vim.lsp.buf.add_workspace_folder)
+  map("<space>wr", vim.lsp.buf.remove_workspace_folder)
+  map("<space>wl", function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end)
+
+  -- Diagnostics
+  map("<space>e", vim.diagnostic.open_float)
+  map("[d", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+  end)
+  map("]d", function()
+    vim.diagnostic.jump({ count = 1, float = true })
+  end)
+  map("[[", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+  end)
+  map("]]", function()
+    vim.diagnostic.jump({ count = 1, float = true })
+  end)
+  map("<space>q", vim.diagnostic.setloclist)
+  map("]a", function()
+    if has_fzf then
+      fzf.diagnostics_workspace()
+    else
+      vim.diagnostic.setqflist()
+    end
+  end)
+  map("]e", function()
+    if has_fzf then
+      fzf.diagnostics_workspace({ severity = vim.diagnostic.severity.ERROR })
+    else
+      vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
+    end
+  end)
 end
 
 function M.setup()
-  local lspconfig = require("lspconfig")
-  local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
   -- Mason setup
   require("mason").setup({
     registries = {
@@ -51,53 +71,73 @@ function M.setup()
       "github:mason-org/mason-registry",
     },
   })
-  require("mason-lspconfig").setup()
+  -- roslyn.nvim owns the C# client (server name "roslyn"). The Mason package
+  -- roslyn-language-server maps to lspconfig's "roslyn_ls", so leaving it in
+  -- automatic_enable would start a second C# server and double every
+  -- diagnostic. Exclude it here.
+  require("mason-lspconfig").setup({
+    automatic_enable = { exclude = { "roslyn_ls" } },
+  })
 
-  vim.lsp.config("ts_ls", {
+  -- Shared defaults for *every* server, including ones mason-lspconfig enables
+  -- automatically (eslint, etc). Without this, only servers configured by hand
+  -- below would get nvim-cmp's expanded capabilities.
+  vim.lsp.config("*", {
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
     on_attach = on_attach,
   })
+
   vim.lsp.enable("ts_ls")
 
   vim.lsp.config("pyright", {
-    on_attach = on_attach,
-    root_dir = function(fname)
-      local util = require("lspconfig.util")
-      -- Look for common Python project markers
-      local root = util.root_pattern(".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt", "manage.py")(
-        fname
-      )
-      return root or vim.fn.getcwd()
+    root_dir = function(bufnr, on_dir)
+      local root = vim.fs.root(bufnr, {
+        "pyrightconfig.json",
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+        "requirements.txt",
+        "manage.py",
+        ".git",
+      })
+      on_dir(root or vim.fn.getcwd())
     end,
     before_init = function(_, config)
-      -- Try to detect virtual environment
-      local venv_paths = {
-        vim.fn.getcwd() .. "/venv",
-        vim.fn.getcwd() .. "/.venv",
-        vim.env.VIRTUAL_ENV,
-      }
+      -- Resolve the interpreter from the project root pyright actually picked,
+      -- not from cwd -- cwd is wrong whenever nvim is opened in a subdirectory.
+      local root = config.root_dir or vim.fn.getcwd()
+      -- Build the candidate list without nil holes: ipairs stops at the first
+      -- nil, so a table starting with an unset $VIRTUAL_ENV iterates zero times.
+      local candidates = {}
+      if vim.env.VIRTUAL_ENV then
+        table.insert(candidates, vim.env.VIRTUAL_ENV)
+      end
+      table.insert(candidates, root .. "/.venv")
+      table.insert(candidates, root .. "/venv")
 
-      for _, venv in ipairs(venv_paths) do
-        if venv and vim.fn.isdirectory(venv) == 1 then
+      for _, venv in ipairs(candidates) do
+        if vim.fn.executable(venv .. "/bin/python") == 1 then
           config.settings.python.pythonPath = venv .. "/bin/python"
-          break
+          return
         end
       end
     end,
     settings = {
       python = {
-        pythonPath = vim.env.VIRTUAL_ENV and (vim.env.VIRTUAL_ENV .. "/bin/python") or nil,
         analysis = {
-          typeCheckingMode = "basic", -- Use basic instead of strict
+          typeCheckingMode = "basic",
           autoSearchPaths = true,
           useLibraryCodeForTypes = true,
+          -- Required for cross-file find-references to see the whole project.
           diagnosticMode = "workspace",
-          reportMissingImports = false,
-          reportMissingTypeStubs = false, -- Suppress missing type stubs errors
+          -- NOTE: reportMissingImports is deliberately left on. It is the
+          -- signal that pyright picked the wrong interpreter, which silently
+          -- breaks go-to-reference across modules.
+          reportMissingTypeStubs = false,
           reportUnknownMemberType = false,
           reportUnknownArgumentType = false,
           reportUnknownVariableType = false,
           reportUnknownParameterType = false,
-          reportGeneralTypeIssues = false, -- Suppress general type issues
           diagnosticSeverityOverrides = {
             reportOptionalMemberAccess = "none",
             reportOptionalSubscript = "none",
@@ -110,11 +150,35 @@ function M.setup()
   vim.lsp.enable("pyright")
 
   vim.lsp.config("roslyn", {
-    on_attach = on_attach,
-    capabilities = capabilities,
+    settings = {
+      -- Roslyn defaults to analysing open files only, so whole-solution
+      -- correctness (including whether a using is genuinely unused) is never
+      -- computed. If the server gets slow on a large solution, drop
+      -- dotnet_analyzer_diagnostics_scope back to "openFiles" and keep the
+      -- compiler scope at "fullSolution".
+      ["csharp|background_analysis"] = {
+        dotnet_analyzer_diagnostics_scope = "fullSolution",
+        dotnet_compiler_diagnostics_scope = "fullSolution",
+      },
+      ["csharp|code_lens"] = {
+        dotnet_enable_references_code_lens = true,
+      },
+      ["csharp|completion"] = {
+        dotnet_show_completion_items_from_unimported_namespaces = true,
+        dotnet_show_name_completion_suggestions = true,
+      },
+      ["csharp|symbol_search"] = {
+        dotnet_search_reference_assemblies = true,
+      },
+    },
   })
 
-  require("roslyn").setup({})
+  require("roslyn").setup({
+    -- Find .sln files in child directories too
+    broad_search = true,
+    -- Stick with the first solution chosen instead of re-guessing per buffer
+    lock_target = true,
+  })
 end
 
 return M
