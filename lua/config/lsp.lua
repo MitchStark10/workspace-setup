@@ -4,8 +4,11 @@ local function on_attach(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
+  -- nowait: "gr" and friends are prefixes of Neovim's built-in grr/gri/gra/grn/
+  -- grt/grx maps, so without it every one of these waits out 'timeoutlen'
+  -- before firing. See :help map-precedence.
   local function map(lhs, rhs)
-    vim.keymap.set("n", lhs, rhs, { noremap = true, silent = true, buffer = bufnr })
+    vim.keymap.set("n", lhs, rhs, { noremap = true, silent = true, nowait = true, buffer = bufnr })
   end
 
   local has_fzf, fzf = pcall(require, "fzf-lua")
@@ -82,9 +85,23 @@ function M.setup()
   -- Shared defaults for *every* server, including ones mason-lspconfig enables
   -- automatically (eslint, etc). Without this, only servers configured by hand
   -- below would get nvim-cmp's expanded capabilities.
+  --
+  -- capabilities only -- NOT on_attach. vim.lsp.config resolves a server as
+  --   tbl_deep_extend("force", config["*"], lsp/<name>.lua, config["<name>"])
+  -- which deep-merges tables but *replaces* functions. nvim-lspconfig ships its
+  -- own on_attach in lsp/pyright.lua, lsp/ts_ls.lua and lsp/eslint.lua, and
+  -- those sit at higher precedence than "*" -- so an on_attach here is silently
+  -- dropped for exactly the servers we use most. Attach from LspAttach instead:
+  -- it composes with lspconfig's on_attach rather than competing with it.
   vim.lsp.config("*", {
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
-    on_attach = on_attach,
+  })
+
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("UserLspAttach", { clear = true }),
+    callback = function(args)
+      on_attach(vim.lsp.get_client_by_id(args.data.client_id), args.buf)
+    end,
   })
 
   vim.lsp.enable("ts_ls")

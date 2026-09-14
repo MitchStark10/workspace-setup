@@ -27,9 +27,17 @@ return {
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "javascript", "typescript", "typescriptreact", "cs", "python", "markdown" },
-      callback = function()
+      callback = function(args)
         vim.treesitter.start()
-        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+
+        -- Only hand indenting to Treesitter when the language actually ships an
+        -- `indents` query. Without one, indentexpr() returns 0 for every line
+        -- (c_sharp has no indents.scm), which silently breaks newline indent and
+        -- clobbers the working runtime indent file.
+        local lang = vim.treesitter.language.get_lang(args.match)
+        if lang and vim.treesitter.query.get(lang, "indents") then
+          vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
       end,
     })
 
