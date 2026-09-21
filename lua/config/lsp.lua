@@ -58,11 +58,11 @@ local function on_attach(client, bufnr)
     end
   end)
   map("]e", function()
-    if has_fzf then
-      fzf.diagnostics_workspace({ severity = vim.diagnostic.severity.ERROR })
-    else
-      vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
-    end
+    vim.diagnostic.jump({
+      count = 1,
+      float = true,
+      severity = vim.diagnostic.severity.ERROR,
+    })
   end)
 end
 
