@@ -170,6 +170,7 @@ export PATH="/Users/mitchellstark/.local/bin:$PATH"
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/mitchellstark/.lmstudio/bin"
 # End of LM Studio CLI section
+
 # Added by LM Studio CLI tool (lms)
 export PATH="$PATH:/home/mitch/.lmstudio/bin"
 # Added by Antigravity CLI installer

@@ -68,3 +68,5 @@ export PATH="$HOME/.local/bin:$PATH"
 # Docker desktop in the user space
 export PATH="$HOME/.docker/bin:$PATH"
 
+export VISUAL="nvim"
+export EDITOR="nvim"

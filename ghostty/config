@@ -1,4 +1,5 @@
+theme = light:Catppuccin Latte,dark:Catppuccin Frappe
 keybind = ctrl+h=previous_tab
 keybind = ctrl+l=next_tab
-keybind = cmd+shift+h=move_tab_left
-keybind = cmd+shift+l=move_tab_right
+keybind = cmd+shift+h=move_tab:-1
+keybind = cmd+shift+l=move_tab:1
