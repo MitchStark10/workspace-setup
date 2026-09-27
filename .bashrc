@@ -122,11 +122,20 @@ fi
 alias ls="ls -al"
 alias py="python3"
 alias ag="ag --hidden"
-alias v="vim ."
+alias v="nvim ."
+alias nano="nvim"
+alias sudo="sudo "
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export ANDROID_HOME=$HOME/Android/sdk
+export ANDROID_SDK_ROOT=$ANDROID_HOME
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
 
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
@@ -155,11 +164,18 @@ export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
 export EDITOR='nvim'
 export VISUAL='nvim'
 
-
 # Added by Antigravity CLI installer
 export PATH="/Users/mitchellstark/.local/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/mitchellstark/.lmstudio/bin"
 # End of LM Studio CLI section
+# Added by LM Studio CLI tool (lms)
+export PATH="$PATH:/home/mitch/.lmstudio/bin"
+# Added by Antigravity CLI installer
+export PATH="/home/mitch/.local/bin:$PATH"
+
+#LM Studio + Aider integration
+export LM_STUDIO_API_KEY=dummy-api-key # Mac/Linux
+export LM_STUDIO_API_BASE=http://localhost:1234/v1 # Mac/Linux
 
