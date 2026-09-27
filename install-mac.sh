@@ -87,6 +87,33 @@ link_nvim_file "init.lua"
 link_nvim_file "lua"
 link_nvim_file "lazy-lock.json"
 
+# Setup Ghostty config symlink
+GHOSTTY_CONFIG_DIR="$HOME/.config/ghostty"
+mkdir -p "$GHOSTTY_CONFIG_DIR"
+link_ghostty_file() {
+    local name="$1"
+    local repo_path="$SCRIPT_DIR/ghostty/$name"
+    local target_path="$GHOSTTY_CONFIG_DIR/$name"
+
+    if [ ! -e "$repo_path" ]; then
+        echo "Warning: $repo_path not found, skipping symlink."
+        return
+    fi
+
+    if [ -L "$target_path" ]; then
+        echo "$name is already a symlink."
+    else
+        if [ -e "$target_path" ]; then
+            echo "Backing up existing $name to $name.bak"
+            mv "$target_path" "$target_path.bak"
+        fi
+        echo "Creating symlink for $name..."
+        ln -s "$repo_path" "$target_path"
+    fi
+}
+
+link_ghostty_file "config"
+
 # 1. Ensure Homebrew is installed
 if ! command -v brew &> /dev/null; then
     echo "Installing Homebrew..."
@@ -166,5 +193,7 @@ brew install the_silver_searcher
 brew install --cask docker
 brew install docker-compose
 
-echo "Setup complete! Please restart your shell to apply all changes."
+# 11. Ghostty
+brew install --cask ghostty
 
+echo "Setup complete! Please restart your shell to apply all changes."
