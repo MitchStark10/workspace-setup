@@ -1,44 +1,66 @@
 local M = {}
+local macos_poll_timer
+local active_theme
 
--- Theme configuration
-local function set_theme()
-  -- Check OS theme (for WSL, check Windows theme)
-  local handle = io.popen(
-    'powershell.exe -Command "(Get-ItemProperty -Path HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize).AppsUseLightTheme" 2>/dev/null'
-  )
-  if handle then
-    local result = handle:read("*a")
-    handle:close()
-
-    if result:match("1") then
-      vim.o.background = "light"
-      vim.cmd("colorscheme tokyonight-day")
-    else
-      vim.o.background = "dark"
-      vim.cmd("colorscheme tokyonight-night")
+local function detect_system_theme()
+  if vim.fn.has("mac") == 1 then
+    local result = vim.fn.system({ "defaults", "read", "-g", "AppleInterfaceStyle" })
+    if vim.v.shell_error == 0 and result:lower():match("dark") then
+      return "dark"
     end
-  else
-    -- Fallback to dark theme if detection fails
-    vim.o.background = "dark"
-    vim.cmd("colorscheme tokyonight-night")
+
+    return "light"
   end
+
+  if vim.fn.executable("powershell.exe") == 1 then
+    local result = vim.fn.system({
+      "powershell.exe",
+      "-NoProfile",
+      "-Command",
+      "(Get-ItemProperty -Path HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize).AppsUseLightTheme",
+    })
+    if vim.v.shell_error == 0 then
+      return result:match("1") and "light" or "dark"
+    end
+  end
+
+  return nil
+end
+
+local function set_theme(theme)
+  theme = theme or detect_system_theme() or "dark"
+  if active_theme == theme then
+    return
+  end
+
+  vim.o.background = theme
+  vim.cmd("colorscheme " .. (theme == "light" and "tokyonight-day" or "tokyonight-night"))
+  active_theme = theme
 end
 
 function M.setup()
-  -- Set theme on startup
   set_theme()
 
-  -- Command to manually switch to light mode
   vim.api.nvim_create_user_command("Light", function()
-    vim.o.background = "light"
-    vim.cmd("colorscheme tokyonight-day")
+    set_theme("light")
   end, {})
 
-  -- Command to manually switch to dark mode
   vim.api.nvim_create_user_command("Dark", function()
-    vim.o.background = "dark"
-    vim.cmd("colorscheme tokyonight-night")
+    set_theme("dark")
   end, {})
+
+  if vim.fn.has("mac") == 1 then
+    macos_poll_timer = (vim.uv or vim.loop).new_timer()
+    macos_poll_timer:start(1000, 1000, vim.schedule_wrap(set_theme))
+
+    vim.api.nvim_create_autocmd("VimLeavePre", {
+      once = true,
+      callback = function()
+        macos_poll_timer:stop()
+        macos_poll_timer:close()
+      end,
+    })
+  end
 end
 
 return M
