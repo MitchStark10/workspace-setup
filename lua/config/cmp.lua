@@ -38,10 +38,6 @@ function M.setup()
     }),
   })
 
-  -- claude-complete.nvim setup
-  require("claude-complete").setup({
-    auto = { enabled = true },
-  })
 end
 
 return M
