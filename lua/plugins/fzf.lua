@@ -20,23 +20,23 @@ return {
     end
   end,
   config = function()
-    -- Find files with Ctrl+p
-    vim.keymap.set("n", "<C-p>", ":Files<CR>")
-
     -- fzf.vim's own :Ag passes no options through, and ag skips dotfiles
-    -- unless asked. Redefine it with --hidden so <C-f> matches :Files.
+    -- unless asked. Keep its persisted query history while placing the preview
+    -- below the results, like the fzf-lua LSP pickers.
     vim.api.nvim_create_user_command("Ag", function(opts)
       vim.fn["fzf#vim#ag"](
         opts.args,
         "--hidden",
-        vim.fn["fzf#vim#with_preview"](),
+        vim.fn["fzf#vim#with_preview"]({
+          options = { "--preview-window", "down:50%", "--no-hscroll" },
+        }),
         opts.bang and 1 or 0
       )
     end, { bang = true, nargs = "*" })
 
+    vim.keymap.set("n", "<C-f>", ":Ag<CR>", { desc = "Search project" })
+
     -- Show recent buffers with Ctrl+b
     vim.keymap.set("n", "<C-b>", ":Buffers<CR>")
-
-    vim.keymap.set("n", "<C-f>", ":Ag<CR>")
   end,
 }

@@ -87,7 +87,15 @@ export NVM_DIR="$HOME/.nvm"
 nvm install --lts
 nvm use --lts
 
-# 4. .NET SDKs (8 and 10)
+# 4. Dev Containers CLI
+if ! command -v devcontainer &> /dev/null; then
+    echo "Installing Dev Containers CLI..."
+    npm install --global @devcontainers/cli
+else
+    echo "Dev Containers CLI is already installed."
+fi
+
+# 5. .NET SDKs (8 and 10)
 # Registers the Microsoft package repository and installs the SDKs natively
 echo "Installing .NET SDKs..."
 declare -r MicrosoftPackagesUrl="https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
@@ -98,11 +106,11 @@ if wget -q "$MicrosoftPackagesUrl" -O packages-microsoft-prod.deb; then
 fi
 sudo apt install -y dotnet-sdk-8.0 dotnet-sdk-10.0
 
-# 5. Python
+# 6. Python
 echo "Installing Python and pip..."
 sudo apt install -y python3 python3-pip python3-venv
 
-# 6. uv (Astral)
+# 7. uv (Astral)
 if ! command -v uv &> /dev/null; then
     echo "Installing uv..."
     curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -110,13 +118,13 @@ else
     echo "uv is already installed."
 fi
 
-# 7. Neovim
+# 8. Neovim
 echo "Installing Neovim..."
 sudo apt install -y neovim
 
-# 7.1 lazy.nvim self-bootstraps from init.lua on first launch, nothing to do here
+# 8.1 lazy.nvim self-bootstraps from init.lua on first launch, nothing to do here
 
-# 7.2 setup nvim as default editor in terminal
+# 8.2 setup nvim as default editor in terminal
 echo "Setting Neovim as default editor..."
 # Set for current session
 export EDITOR='nvim'
@@ -126,11 +134,11 @@ if ! grep -q "export EDITOR='nvim'" "$HOME/.bashrc"; then
     echo -e "\n# Set Neovim as default editor\nexport EDITOR='nvim'\nexport VISUAL='nvim'" >> "$HOME/.bashrc"
 fi
 
-# 8. The Silver Searcher (ag)
+# 9. The Silver Searcher (ag)
 echo "Installing The Silver Searcher..."
 sudo apt install -y silversearcher-ag
 
-# 9. Docker (Installs Docker Engine natively rather than Docker Desktop GUI)
+# 10. Docker (Installs Docker Engine natively rather than Docker Desktop GUI)
 echo "Installing Docker Engine..."
 if ! command -v docker &> /dev/null; then
     sudo apt install -y docker.io
@@ -140,7 +148,7 @@ else
     echo "Docker is already installed."
 fi
 
-# 10. Spotify
+# 11. Spotify
 echo "Installing Spotify..."
 if ! command -v spotify &> /dev/null; then
     curl -sS https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
@@ -150,7 +158,7 @@ else
     echo "Spotify is already installed."
 fi
 
-# 11. Bitwarden
+# 12. Bitwarden
 echo "Installing Bitwarden..."
 if ! command -v bitwarden &> /dev/null; then
     sudo snap install bitwarden

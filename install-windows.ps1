@@ -86,14 +86,26 @@ if (Get-Command nvm -ErrorAction SilentlyContinue) {
     nvm use lts
 }
 
-# 3. .NET SDKs (8 and 10)
+# 3. Dev Containers CLI
+if (Get-Command npm -ErrorAction SilentlyContinue) {
+    if (Get-Command devcontainer -ErrorAction SilentlyContinue) {
+        Write-Host "Dev Containers CLI is already installed." -ForegroundColor Green
+    } else {
+        Write-Host "Installing Dev Containers CLI..." -ForegroundColor Yellow
+        npm install --global @devcontainers/cli
+    }
+} else {
+    Write-Warning "npm is unavailable. Restart the terminal after installing NVM, then rerun this script to install the Dev Containers CLI."
+}
+
+# 4. .NET SDKs (8 and 10)
 Install-WingetPackage "Microsoft.DotNet.SDK.8" ".NET SDK 8"
 Install-WingetPackage "Microsoft.DotNet.SDK.10" ".NET SDK 10"
 
-# 4. Python
+# 5. Python
 Install-WingetPackage "Python.Python.3.12" "Python"
 
-# 5. uv (Astral)
+# 6. uv (Astral)
 if (!(Get-Command uv -ErrorAction SilentlyContinue)) {
     Write-Host "Installing uv..." -ForegroundColor Yellow
     powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -101,18 +113,18 @@ if (!(Get-Command uv -ErrorAction SilentlyContinue)) {
     Write-Host "uv is already installed." -ForegroundColor Green
 }
 
-# 6. Neovim
+# 7. Neovim
 Install-WingetPackage "Neovim.Neovim" "Neovim"
 
-# 6.1 lazy.nvim self-bootstraps from init.lua on first launch, nothing to do here
+# 7.1 lazy.nvim self-bootstraps from init.lua on first launch, nothing to do here
 
-# 6.2 Setup nvim as default for git
+# 7.2 Setup nvim as default for git
 git config --global core.editor "nvim"
 
-# 7. The Silver Searcher (ag)
+# 8. The Silver Searcher (ag)
 Install-WingetPackage "hercules-ci.ag" "The Silver Searcher"
 
-# 8. Docker Desktop
+# 9. Docker Desktop
 Install-WingetPackage "Docker.DockerDesktop" "Docker Desktop"
 
 Write-Host "`nSetup complete! You may need to restart your terminal for all changes to take effect." -ForegroundColor Cyan

@@ -149,28 +149,35 @@ brew install git
 if [ ! -d "$HOME/.nvm" ]; then
     echo "Installing NVM..."
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-    # Source NVM immediately for current session
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 else
     echo "NVM is already installed."
 fi
 
-# Install Node LTS via NVM
+# Load NVM and install Node LTS for this non-interactive setup session.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 nvm install --lts
 nvm use --lts
 
-# 5. .NET SDKs (6, 8, and 10)
+# 5. Dev Containers CLI
+if ! command -v devcontainer &> /dev/null; then
+    echo "Installing Dev Containers CLI..."
+    npm install --global @devcontainers/cli
+else
+    echo "Dev Containers CLI is already installed."
+fi
+
+# 6. .NET SDKs (6, 8, and 10)
 # Use official cask names; check brew search for availability
 brew tap isen-ng/dotnet-sdk-versions # Common tap for specific dotnet versions
 brew install --cask dotnet-sdk6
 brew install --cask dotnet-sdk8
 brew install --cask dotnet-sdk10
 
-# 6. Python
+# 7. Python
 brew install python
 
-# 7. uv (Astral)
+# 8. uv (Astral)
 if ! command -v uv &> /dev/null; then
     echo "Installing uv..."
     curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -178,22 +185,22 @@ else
     echo "uv is already installed."
 fi
 
-# 8. Neovim
+# 9. Neovim
 brew install neovim
 
-# 8.1 lazy.nvim self-bootstraps from init.lua on first launch, nothing to do here
+# 9.1 lazy.nvim self-bootstraps from init.lua on first launch, nothing to do here
 
-# 8.2 setup nvim as default editor in terminal
+# 9.2 setup nvim as default editor in terminal
 
 
-# 9. The Silver Searcher (ag)
+# 10. The Silver Searcher (ag)
 brew install the_silver_searcher
 
-# 10. Docker
+# 11. Docker
 brew install --cask docker
 brew install docker-compose
 
-# 11. Ghostty
+# 12. Ghostty
 brew install --cask ghostty
 
 echo "Setup complete! Please restart your shell to apply all changes."
