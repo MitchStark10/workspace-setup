@@ -122,7 +122,14 @@ fi
 echo "Installing Neovim..."
 sudo apt install -y neovim
 
-# 8.1 lazy.nvim self-bootstraps from init.lua on first launch, nothing to do here
+# 8.1 Restore the plugin revisions pinned in lazy-lock.json. Without this,
+# Lazy can retain an existing nvim-treesitter checkout from its old master
+# branch, whose API does not match the configuration on the main branch.
+echo "Synchronizing Neovim plugins..."
+if ! nvim --headless "+Lazy! restore" "+qa"; then
+    echo "Failed to synchronize Neovim plugins." >&2
+    exit 1
+fi
 
 # 8.2 setup nvim as default editor in terminal
 echo "Setting Neovim as default editor..."
