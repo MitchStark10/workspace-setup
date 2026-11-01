@@ -25,35 +25,8 @@ else
     echo "Warning: $REPO_BASHRC not found, skipping symlink."
 fi
 
-# Setup nvim config symlinks (init.lua, lua/, lazy-lock.json)
-NVIM_CONFIG_DIR="$HOME/.config/nvim"
-mkdir -p "$NVIM_CONFIG_DIR"
-
-link_nvim_file() {
-    local name="$1"
-    local repo_path="$SCRIPT_DIR/$name"
-    local target_path="$NVIM_CONFIG_DIR/$name"
-
-    if [ ! -e "$repo_path" ]; then
-        echo "Warning: $repo_path not found, skipping symlink."
-        return
-    fi
-
-    if [ -L "$target_path" ]; then
-        echo "$name is already a symlink."
-    else
-        if [ -e "$target_path" ]; then
-            echo "Backing up existing $name to $name.bak"
-            mv "$target_path" "$target_path.bak"
-        fi
-        echo "Creating symlink for $name..."
-        ln -s "$repo_path" "$target_path"
-    fi
-}
-
-link_nvim_file "init.lua"
-link_nvim_file "lua"
-link_nvim_file "lazy-lock.json"
+# Set up the Neovim configuration from this repository.
+bash "$SCRIPT_DIR/link-nvim-config.sh"
 
 # Disable advanced tiling, just let me move my stuff around
 gsettings set org.gnome.shell.extensions.tiling-assistant enable-tiling-popup "false"

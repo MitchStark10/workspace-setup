@@ -74,6 +74,15 @@ function M.setup()
       "github:mason-org/mason-registry",
     },
   })
+
+  -- Ensure tree-sitter CLI is available for nvim-treesitter parser builds
+  local mr = require("mason-registry")
+  if mr.has_package("tree-sitter-cli") then
+    local p = mr.get_package("tree-sitter-cli")
+    if not p:is_installed() then
+      p:install()
+    end
+  end
   -- roslyn.nvim owns the C# client (server name "roslyn"). The Mason package
   -- roslyn-language-server maps to lspconfig's "roslyn_ls", so leaving it in
   -- automatic_enable would start a second C# server and double every
