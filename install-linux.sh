@@ -28,6 +28,33 @@ fi
 # Set up the Neovim configuration from this repository.
 bash "$SCRIPT_DIR/link-nvim-config.sh"
 
+# Setup Ghostty config symlink
+GHOSTTY_CONFIG_DIR="$HOME/.config/ghostty"
+mkdir -p "$GHOSTTY_CONFIG_DIR"
+link_ghostty_file() {
+    local name="$1"
+    local repo_path="$SCRIPT_DIR/ghostty/$name"
+    local target_path="$GHOSTTY_CONFIG_DIR/$name"
+
+    if [ ! -e "$repo_path" ]; then
+        echo "Warning: $repo_path not found, skipping symlink."
+        return
+    fi
+
+    if [ -L "$target_path" ]; then
+        echo "$name is already a symlink."
+    else
+        if [ -e "$target_path" ]; then
+            echo "Backing up existing $name to $name.bak"
+            mv "$target_path" "$target_path.bak"
+        fi
+        echo "Creating symlink for $name..."
+        ln -s "$repo_path" "$target_path"
+    fi
+}
+
+link_ghostty_file "config"
+
 # Disable advanced tiling, just let me move my stuff around
 gsettings set org.gnome.shell.extensions.tiling-assistant enable-tiling-popup "false"
 
@@ -144,6 +171,14 @@ if ! command -v bitwarden &> /dev/null; then
     sudo snap install bitwarden
 else
     echo "Bitwarden is already installed."
+fi
+
+# 13. Ghostty
+echo "Installing Ghostty..."
+if ! command -v ghostty &> /dev/null; then
+    sudo snap install ghostty
+else
+    echo "Ghostty is already installed."
 fi
 
 echo "Setup complete! Please log out and log back in (or restart your terminal) to apply all changes."
