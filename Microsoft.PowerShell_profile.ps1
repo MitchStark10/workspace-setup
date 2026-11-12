@@ -58,7 +58,7 @@ function localClaude {
   claude --model google/gemma-4-31b
 }
 
-$nvimconfig = "$env:LOCALAPPDATA\nvim\init.vim"
+$nvimconfig = "$HOME\.config\nvim\init.lua"
 
 # Source work-specific configuration if it exists
 # $PSScriptRoot is the directory containing the profile script

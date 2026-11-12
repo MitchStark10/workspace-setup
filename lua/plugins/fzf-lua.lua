@@ -9,7 +9,9 @@ return {
       preview = { layout = "vertical", vertical = "down:50%" },
     },
     files = {
-      cmd = [[if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then { git ls-files --cached --others --exclude-standard; git ls-files --others --ignored --exclude-standard -- '.env' '.env.*' '**/.env' '**/.env.*'; } | sort -u; else find . -type f ! -path '*/.git/*' ! -path '*/.jj/*' ! -path '*/node_modules/*'; fi]],
+      cmd = vim.fn.has("win32") == 1
+          and "git rev-parse --is-inside-work-tree >nul 2>&1 && git ls-files --cached --others --exclude-standard || dir /s /b /a-d"
+        or [[if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then git ls-files --cached --others --exclude-standard; else find . -type f ! -path '*/.git/*' ! -path '*/.jj/*' ! -path '*/node_modules/*'; fi]],
     },
   },
   config = function(_, opts)

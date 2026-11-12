@@ -56,6 +56,25 @@ Link-NvimFile "init.lua"
 Link-NvimFile "lua"
 Link-NvimFile "lazy-lock.json"
 
+# Ensure Windows Neovim resolves .config\nvim
+$LOCALAPPDATA_NVIM = Join-Path $env:LOCALAPPDATA "nvim"
+$item = Get-Item $LOCALAPPDATA_NVIM -ErrorAction SilentlyContinue
+if ($item -and $item.Attributes -match "ReparsePoint") {
+    Write-Host "AppData\Local\nvim is already a junction/symlink." -ForegroundColor Green
+} else {
+    if (Test-Path $LOCALAPPDATA_NVIM) {
+        Write-Host "Backing up existing AppData\Local\nvim to nvim.old" -ForegroundColor Yellow
+        Move-Item $LOCALAPPDATA_NVIM "$LOCALAPPDATA_NVIM.old" -Force
+    }
+    Write-Host "Creating junction from AppData\Local\nvim to $NVIM_CONFIG_DIR..." -ForegroundColor Yellow
+    New-Item -Path $LOCALAPPDATA_NVIM -ItemType Junction -Value $NVIM_CONFIG_DIR | Out-Null
+}
+
+$xdgConfig = Join-Path $HOME ".config"
+if ([Environment]::GetEnvironmentVariable("XDG_CONFIG_HOME", "User") -ne $xdgConfig) {
+    [Environment]::SetEnvironmentVariable("XDG_CONFIG_HOME", $xdgConfig, "User")
+}
+
 # Ensure Winget is available
 if (!(Get-Command winget -ErrorAction SilentlyContinue)) {
     Write-Error "winget not found. Please install it from the Microsoft Store."
