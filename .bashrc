@@ -37,7 +37,7 @@ fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
+    xterm-color|xterm-ghostty|*-256color) color_prompt=yes;;
 esac
 
 # Function to get the current git branch and status
@@ -119,7 +119,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-alias ls="ls -al"
+alias ls="ls -al --color=auto"
 alias py="python3"
 alias ag="ag --hidden"
 alias v="nvim ."
@@ -179,4 +179,3 @@ export PATH="/home/mitch/.local/bin:$PATH"
 #LM Studio + Aider integration
 export LM_STUDIO_API_KEY=dummy-api-key # Mac/Linux
 export LM_STUDIO_API_BASE=http://localhost:1234/v1 # Mac/Linux
-
